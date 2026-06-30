@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<!-- saved from url=(0193)file:///C:/Users/USUARIO/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/E9859EEFF8EEB9E12166F79BC5D9AF48B3E69670/transfers/2026-26/base-proveedores%20(3).html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base de Proveedores · Marketing Experiencial</title>
+<style>
+  :root {
+    --bg:#F7F6F3;--surface:#FFFFFF;--border:#E4E2DC;--border-strong:#C8C5BC;
+    --text:#1A1916;--text-2:#6B6860;--text-3:#9C9A93;
+    --teal:#0F6E56;--teal-light:#E1F5EE;--teal-mid:#1D9E75;
+    --blue:#185FA5;--blue-light:#E6F1FB;
+    --red:#A32D2D;--red-light:#FCEBEB;
+    --gray-light:#F1EFE8;--radius:10px;--radius-lg:14px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{--bg:#1A1916;--surface:#242320;--border:#333230;--border-strong:#4A4845;
+    --text:#E8E6DF;--text-2:#9C9A93;--text-3:#6B6860;
+    --teal-light:#083D2F;--blue-light:#0A2845;--red-light:#2D0E0E;--gray-light:#2A2926;}
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+  .app{display:grid;grid-template-rows:auto 1fr;min-height:100vh}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:10}
+  .logo{font-size:15px;font-weight:600;letter-spacing:-.3px}.logo span{color:var(--teal-mid)}
+  .header-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+  main{padding:24px;max-width:1200px;margin:0 auto;width:100%}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+  .stat-n{font-size:26px;font-weight:600;line-height:1}.stat-l{font-size:12px;color:var(--text-2);margin-top:4px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .search-wrap{position:relative;flex:1;min-width:200px}
+  .search-wrap input{width:100%;padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px;outline:none;transition:border-color .15s}
+  .search-wrap input:focus{border-color:var(--teal-mid)}
+  .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none}
+  select{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px;outline:none;cursor:pointer}
+  .btn{padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:background .15s,opacity .15s;display:inline-flex;align-items:center;gap:6px}
+  .btn-primary{background:var(--teal-mid);color:#fff}.btn-primary:hover{background:var(--teal)}
+  .btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--gray-light)}
+  .btn-danger{background:var(--red-light);color:var(--red);border:1px solid transparent}.btn-danger:hover{opacity:.85}
+  .btn-sm{padding:5px 10px;font-size:12px}
+  .provider-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+  .card:hover{border-color:var(--border-strong);box-shadow:0 2px 12px rgba(0,0,0,.06)}
+  .card-top{display:flex;gap:12px;align-items:flex-start}
+  .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+  .card-info{flex:1;min-width:0}
+  .card-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card-sub{font-size:12px;color:var(--text-2);margin-top:2px}
+  .card-score{font-size:13px;color:#EF9F27;margin-left:auto;white-space:nowrap}
+  .card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+  .tag{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500}
+  .card-footer{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;gap:14px;font-size:12px;color:var(--text-2);flex-wrap:wrap}
+  .empty{text-align:center;padding:4rem 1rem;color:var(--text-2);grid-column:1/-1}
+  .empty-icon{font-size:36px;margin-bottom:8px}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+  .overlay.open{opacity:1;pointer-events:all}
+  .modal{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transform:translateY(8px);transition:transform .2s}
+  .overlay.open .modal{transform:translateY(0)}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border)}
+  .modal-head h2{font-size:16px;font-weight:600}
+  .modal-body{padding:20px}.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12px;color:var(--text-2);margin-bottom:5px;font-weight:500}
+  .field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px;outline:none;transition:border-color .15s;font-family:inherit}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal-mid)}
+  .field textarea{resize:vertical;min-height:72px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-start;justify-content:flex-end;z-index:50;opacity:0;pointer-events:none;transition:opacity .2s}
+  .detail-overlay.open{opacity:1;pointer-events:all}
+  .detail-panel{background:var(--surface);border-left:1px solid var(--border);width:460px;max-width:95vw;height:100vh;overflow-y:auto;transform:translateX(20px);transition:transform .2s;display:flex;flex-direction:column}
+  .detail-overlay.open .detail-panel{transform:translateX(0)}
+  .detail-head{padding:20px;border-bottom:1px solid var(--border);display:flex;gap:14px;align-items:flex-start;position:sticky;top:0;background:var(--surface);z-index:1}
+  .detail-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0}
+  .detail-name{font-size:17px;font-weight:600;line-height:1.2}
+  .detail-cat{font-size:13px;color:var(--text-2);margin-top:3px}
+  .detail-body{padding:20px;flex:1}
+  .section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin:18px 0 8px;display:flex;align-items:center;justify-content:space-between}
+  .section-title:first-child{margin-top:0}
+  .kv{display:grid;grid-template-columns:130px 1fr;gap:2px 10px;font-size:13px;margin-bottom:6px}
+  .kv .k{color:var(--text-2)}
+  .note-box{background:var(--gray-light);border-radius:var(--radius);padding:10px 12px;font-size:13px;color:var(--text-2);line-height:1.6;margin-top:4px}
+  .detail-actions{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+  .stars-big{font-size:22px;color:#EF9F27;margin-top:4px}
+  .close-btn{background:none;border:none;cursor:pointer;color:var(--text-2);font-size:20px;line-height:1;padding:2px;margin-left:auto;border-radius:6px}
+  .close-btn:hover{background:var(--gray-light)}
+  /* location selects */
+  .loc-custom-row{display:flex;gap:6px;margin-top:6px}
+  .loc-custom-row input{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px;outline:none}
+  .loc-custom-row input:focus{border-color:var(--teal-mid)}
+  /* Adjuntos */
+  .attach-zone{border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;margin-bottom:10px}
+  .attach-zone:hover,.attach-zone.drag-over{border-color:var(--teal-mid);background:var(--teal-light)}
+  .attach-zone input[type=file]{display:none}
+  .attach-zone-text{font-size:12px;color:var(--text-2);pointer-events:none}
+  .attach-zone-icon{font-size:22px;display:block;margin-bottom:4px}
+  .attach-link-row{display:flex;gap:6px;margin-bottom:10px}
+  .attach-link-row input{flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg);color:var(--text);font-size:13px;outline:none}
+  .attach-link-row input:focus{border-color:var(--teal-mid)}
+  .attach-list{display:flex;flex-direction:column;gap:6px}
+  .attach-item{display:flex;align-items:center;gap:8px;background:var(--gray-light);border-radius:var(--radius);padding:8px 10px}
+  .attach-item-icon{font-size:18px;flex-shrink:0}
+  .attach-item-info{flex:1;min-width:0}
+  .attach-item-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .attach-item-meta{font-size:11px;color:var(--text-3);margin-top:1px}
+  .attach-item-actions{display:flex;gap:4px;flex-shrink:0}
+  .attach-btn{background:none;border:none;cursor:pointer;color:var(--text-2);font-size:15px;padding:2px 4px;border-radius:4px}
+  .attach-btn:hover{background:var(--border)}.attach-btn.del{color:var(--red)}
+  .attach-empty{font-size:12px;color:var(--text-3);text-align:center;padding:8px 0}
+  /* country badges */
+  .c-co{background:#FAEEDA;color:#854F0B}.c-mx{background:#E6F1FB;color:#185FA5}.c-us{background:#EAF3DE;color:#27500A}.c-other{background:#F1EFE8;color:#444441}
+  @media(prefers-color-scheme:dark){.c-co{background:#3A2204;color:#FAC775}.c-mx{background:#0A2845;color:#85B7EB}.c-us{background:#152808;color:#82C45A}.c-other{background:#2A2926;color:#C0BEB8}}
+  @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.toolbar{flex-direction:column;align-items:stretch}main{padding:16px}.row3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Proveedores <span>XP</span></div>
+    <div style="font-size:12px;color:var(--text-3)" id="headerSub">Colombia · México · EE.UU.</div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn btn-primary" onclick="openAdd()">+ Agregar</button>
+    </div>
+  </header>
+  <main>
+    <div class="stats" id="statsRow">
+    <div class="stat"><div class="stat-n">10</div><div class="stat-l">Proveedores totales</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--teal-mid)">9</div><div class="stat-l">Activos</div></div>
+    <div class="stat"><div class="stat-n">4.2</div><div class="stat-l">Score promedio</div></div>
+    <div class="stat"><div class="stat-n" style="font-size:20px">🇲🇽 🇨🇴 🇺🇸</div><div class="stat-l">3 países</div></div>
+  </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+        <input type="text" id="searchInput" placeholder="Buscar proveedor, servicio, ciudad…" oninput="renderGrid()">
+      </div>
+      <select id="f_filtPais" onchange="updateRegionFilter();renderGrid()"><option value="">Todos los países</option><option value="Colombia">Colombia</option><option value="Estados Unidos">Estados Unidos</option><option value="México">México</option></select>
+      <select id="f_filtRegion" onchange="renderGrid()">
+        <option value="">Todos los departamentos/estados</option>
+      </select>
+      <select id="catFilter" onchange="renderGrid()"><option value="">Todas las categorías</option><option value="Catering y F&amp;B">Catering y F&amp;B</option><option value="Escenografía y montaje">Escenografía y montaje</option><option value="Fotografía y video">Fotografía y video</option><option value="Iluminación y sonido">Iluminación y sonido</option><option value="Producción audiovisual">Producción audiovisual</option><option value="Seguridad y protocolo">Seguridad y protocolo</option><option value="Tecnología e interactividad">Tecnología e interactividad</option></select>
+      <select id="statusFilter" onchange="renderGrid()">
+        <option value="">Todos los estados</option>
+        <option value="Activo">Activo</option>
+        <option value="En evaluación">En evaluación</option>
+        <option value="Pausado">Pausado</option>
+        <option value="Bloqueado">Bloqueado</option>
+      </select>
+      <select id="ratingFilter" onchange="renderGrid()">
+        <option value="">Cualquier score</option>
+        <option value="4">4+ ★</option>
+        <option value="3">3+ ★</option>
+      </select>
+    </div>
+    <div class="provider-grid" id="grid"><div class="card" onclick="openDetail(1)">
+      <div class="card-top">
+        <div class="avatar" style="background:#E1F5EE;color:#085041">GL</div>
+        <div class="card-info">
+          <div class="card-name">Grupo Luminary</div>
+          <div class="card-sub">Iluminación y sonido · Ciudad de México · CDMX – Benito Juárez</div>
+        </div>
+        <div class="card-score">★★★★★</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-mx">🇲🇽 MX</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$$ Alto (100k–500k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Iluminación arquitectónica</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">sonido line array</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Rafael Torres</span>
+        <span>📞 +52 55 8823 4401</span>
+        <span style="margin-left:auto">📎 2</span>
+      </div>
+    </div><div class="card" onclick="openDetail(2)">
+      <div class="card-top">
+        <div class="avatar" style="background:#E6F1FB;color:#0C447C">EM</div>
+        <div class="card-info">
+          <div class="card-name">EvenTech México</div>
+          <div class="card-sub">Tecnología e interactividad · Nuevo León · Monterrey</div>
+        </div>
+        <div class="card-score">★★★★★</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-mx">🇲🇽 MX</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$$ Alto (100k–500k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Video mapping</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">realidad aumentada</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Sofía Mendoza</span>
+        <span>📞 +52 81 7744 9900</span>
+        <span style="margin-left:auto">📎 1</span>
+      </div>
+    </div><div class="card" onclick="openDetail(3)">
+      <div class="card-top">
+        <div class="avatar" style="background:#EEEDFE;color:#26215C">FS</div>
+        <div class="card-info">
+          <div class="card-name">Flash Studios</div>
+          <div class="card-sub">Fotografía y video · Ciudad de México · CDMX – Coyoacán</div>
+        </div>
+        <div class="card-score">★★★★★</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-mx">🇲🇽 MX</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$ Medio (20k–100k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Fotografía editorial</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">video recap</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Diego Ramírez</span>
+        <span>📞 +52 55 6677 8899</span>
+        <span style="margin-left:auto">📝</span>
+      </div>
+    </div><div class="card" onclick="openDetail(4)">
+      <div class="card-top">
+        <div class="avatar" style="background:#FAEEDA;color:#633806">S&amp;</div>
+        <div class="card-info">
+          <div class="card-name">Sabores &amp; Experiencias</div>
+          <div class="card-sub">Catering y F&amp;B · Jalisco · Guadalajara</div>
+        </div>
+        <div class="card-score">★★★★☆</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-mx">🇲🇽 MX</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$ Medio (20k–100k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Catering gourmet</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">barras de cocteles</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Carmen Ríos</span>
+        <span>📞 +52 33 5511 2233</span>
+        <span style="margin-left:auto">📝</span>
+      </div>
+    </div><div class="card" onclick="openDetail(5)">
+      <div class="card-top">
+        <div class="avatar" style="background:#FAECE7;color:#712B13">CE</div>
+        <div class="card-info">
+          <div class="card-name">Crea Eventos Bogotá</div>
+          <div class="card-sub">Escenografía y montaje · Bogotá D.C. · Bogotá</div>
+        </div>
+        <div class="card-score">★★★★★</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-co">🇨🇴 CO</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$$ Alto (100k–500k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Escenografías custom</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">stands</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Laura Quintero</span>
+        <span>📞 +57 310 444 8800</span>
+        <span style="margin-left:auto">📎 1</span>
+      </div>
+    </div><div class="card" onclick="openDetail(6)">
+      <div class="card-top">
+        <div class="avatar" style="background:#FBEAF0;color:#72243E">SÉ</div>
+        <div class="card-info">
+          <div class="card-name">Sonido Élite Colombia</div>
+          <div class="card-sub">Iluminación y sonido · Antioquia · Medellín</div>
+        </div>
+        <div class="card-score">★★★★☆</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-co">🇨🇴 CO</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$ Medio (20k–100k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Sonido line array</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">iluminación escénica</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Andrés Mejía</span>
+        <span>📞 +57 304 777 5500</span>
+        <span style="margin-left:auto">📝</span>
+      </div>
+    </div><div class="card" onclick="openDetail(7)">
+      <div class="card-top">
+        <div class="avatar" style="background:#EAF3DE;color:#27500A">CS</div>
+        <div class="card-info">
+          <div class="card-name">Cartagena Sound Pro</div>
+          <div class="card-sub">Iluminación y sonido · Bolívar · Cartagena</div>
+        </div>
+        <div class="card-score">★★★★☆</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-co">🇨🇴 CO</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$ Medio (20k–100k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Sonido line array</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">iluminación eventos</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Iván Herrera</span>
+        <span>📞 +57 312 555 7788</span>
+        <span style="margin-left:auto">📝</span>
+      </div>
+    </div><div class="card" onclick="openDetail(8)">
+      <div class="card-top">
+        <div class="avatar" style="background:#F1EFE8;color:#444441">BP</div>
+        <div class="card-info">
+          <div class="card-name">Barranquilla Produce</div>
+          <div class="card-sub">Producción audiovisual · Atlántico · Barranquilla</div>
+        </div>
+        <div class="card-score">★★★★☆</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-co">🇨🇴 CO</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$ Medio (20k–100k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Producción audiovisual</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">streaming</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Claudia Rueda</span>
+        <span>📞 +57 300 888 4412</span>
+        <span style="margin-left:auto">📝</span>
+      </div>
+    </div><div class="card" onclick="openDetail(9)">
+      <div class="card-top">
+        <div class="avatar" style="background:#E1F5EE;color:#085041">LE</div>
+        <div class="card-info">
+          <div class="card-name">LA Event Tech</div>
+          <div class="card-sub">Tecnología e interactividad · California · Los Angeles</div>
+        </div>
+        <div class="card-score">★★★★☆</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#EAF3DE;color:#27500A">Activo</span>
+        <span class="tag c-us">🇺🇸 US</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$$$$ Premium (&gt;500k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">AR/VR experiencial</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">pantallas holográficas</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Mark Sullivan</span>
+        <span>📞 +1 310 444 9988</span>
+        <span style="margin-left:auto">📝</span>
+      </div>
+    </div><div class="card" onclick="openDetail(10)">
+      <div class="card-top">
+        <div class="avatar" style="background:#E6F1FB;color:#0C447C">S</div>
+        <div class="card-info">
+          <div class="card-name">SegurEvent</div>
+          <div class="card-sub">Seguridad y protocolo · Ciudad de México · CDMX – Cuauhtémoc</div>
+        </div>
+        <div class="card-score">★★☆☆☆</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:#FCEBEB;color:#791F1F">Bloqueado</span>
+        <span class="tag c-mx">🇲🇽 MX</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">$ Bajo (&lt;20k)</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">Control de acceso</span><span class="tag" style="background:var(--gray-light);color:var(--text-2)">guardias</span>
+      </div>
+      <div class="card-footer">
+        <span>👤 Bernardo Leal</span>
+        <span>📞 +52 55 4400 5566</span>
+        <span style="margin-left:auto">📎 1</span>
+      </div>
+    </div></div>
+  </main>
+</div>
+
+<!-- Modal agregar/editar -->
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Nuevo proveedor</h2>
+      <button class="close-btn" onclick="closeAdd()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nombre de la empresa *</label><input id="f_nombre" placeholder="Ej. Luces &amp; Escenarios S.A."></div>
+
+      <!-- País / Departamento / Ciudad en cascada -->
+      <div style="background:var(--gray-light);border-radius:var(--radius);padding:14px 14px 4px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:10px">📍 Ubicación</div>
+        <div class="row3">
+          <div class="field">
+            <label>País *</label>
+            <select id="f_pais" onchange="onPaisChange()">
+              <option value="">Seleccionar…</option>
+              <option value="Colombia">🇨🇴 Colombia</option>
+              <option value="México">🇲🇽 México</option>
+              <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
+              <option value="__otro__">✏️ Otro país…</option>
+            </select>
+            <div id="paisCustomRow" style="display:none;margin-top:6px">
+              <input id="f_pais_custom" placeholder="Escribe el nombre del país…" style="width:100%;padding:7px 10px;border:1.5px solid var(--teal-mid);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px;outline:none">
+              <div style="font-size:11px;color:var(--teal);margin-top:3px">✓ Se guardará y aparecerá en los filtros</div>
+            </div>
+          </div>
+          <div class="field">
+            <label id="regionLabel">Departamento / Estado</label>
+            <select id="f_region" onchange="onRegionChange()">
+              <option value="">— elige país primero —</option>
+            </select>
+            <div id="regionCustomRow" style="display:none;margin-top:6px">
+              <input id="f_region_custom" placeholder="Escribe el departamento o estado…" style="width:100%;padding:7px 10px;border:1.5px solid var(--teal-mid);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px;outline:none">
+              <div style="font-size:11px;color:var(--teal);margin-top:3px">✓ Se guardará y aparecerá en los filtros</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Ciudad / Municipio</label>
+            <select id="f_ciudad_sel" onchange="onCiudadSelChange()">
+              <option value="">— elige región primero —</option>
+            </select>
+            <div id="ciudadCustomRow" style="display:none;margin-top:6px">
+              <input id="f_ciudad" placeholder="Escribe la ciudad o municipio…" style="width:100%;padding:7px 10px;border:1.5px solid var(--teal-mid);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:13px;outline:none">
+              <div style="font-size:11px;color:var(--teal);margin-top:3px">✓ Se guardará y aparecerá en los filtros</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field"><label>Categoría *</label>
+          <select id="f_cat">
+            <option>Producción audiovisual</option><option>Escenografía y montaje</option>
+            <option>Iluminación y sonido</option><option>Catering y F&amp;B</option>
+            <option>Logística y transporte</option><option>Tecnología e interactividad</option>
+            <option>Entretenimiento y artistas</option><option>Fotografía y video</option>
+            <option>Impresos y señalética</option><option>Seguridad y protocolo</option>
+            <option>Mobiliario y decoración</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="field"><label>Estado</label>
+          <select id="f_status"><option>Activo</option><option>En evaluación</option><option>Pausado</option><option>Bloqueado</option></select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Contacto principal</label><input id="f_contacto" placeholder="Nombre"></div>
+        <div class="field"><label>Teléfono / WhatsApp</label><input id="f_tel" placeholder="+57 300…"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Email</label><input id="f_email" placeholder="contacto@empresa.com"></div>
+        <div class="field"><label>Score (1–5)</label>
+          <select id="f_score">
+            <option value="5">⭐⭐⭐⭐⭐ Excelente</option><option value="4">⭐⭐⭐⭐ Muy bueno</option>
+            <option value="3" selected="">⭐⭐⭐ Bueno</option><option value="2">⭐⭐ Regular</option><option value="1">⭐ Deficiente</option>
+          </select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Presupuesto</label>
+          <select id="f_budget">
+            <option>$ Bajo (&lt;20k)</option><option>$$ Medio (20k–100k)</option>
+            <option>$$$ Alto (100k–500k)</option><option>$$$$ Premium (&gt;500k)</option>
+          </select>
+        </div>
+        <div class="field"><label>Cobertura</label>
+          <select id="f_cobertura"><option>Solo ciudad</option><option>Regional</option><option>Nacional</option><option>Internacional</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Servicios (separados por coma)</label><input id="f_servicios" placeholder="video mapping, pantallas LED…"></div>
+      <div class="field"><label>Notas internas</label><textarea id="f_notas" placeholder="Historial, condiciones, advertencias…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeAdd()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProvider()">Guardar proveedor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Panel de detalle -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-panel" id="detailPanel"></div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   DATOS GEOGRÁFICOS
+══════════════════════════════════════════ */
+const GEO = {
+  'Colombia': {
+    label:'Departamento',
+    regions:{
+      'Amazonas':['Leticia','Puerto Nariño'],
+      'Antioquia':['Medellín','Bello','Itagüí','Envigado','Apartadó','Turbo','Rionegro','Sabaneta','La Estrella','Copacabana'],
+      'Arauca':['Arauca','Saravena','Tame'],
+      'Atlántico':['Barranquilla','Soledad','Malambo','Sabanalarga','Santo Tomás'],
+      'Bogotá D.C.':['Bogotá'],
+      'Bolívar':['Cartagena','Magangué','El Carmen de Bolívar','Turbaco'],
+      'Boyacá':['Tunja','Duitama','Sogamoso','Chiquinquirá'],
+      'Caldas':['Manizales','Villamaría','La Dorada','Chinchiná'],
+      'Caquetá':['Florencia','San Vicente del Caguán'],
+      'Casanare':['Yopal','Aguazul','Paz de Ariporo'],
+      'Cauca':['Popayán','Santander de Quilichao','Puerto Tejada'],
+      'César':['Valledupar','Aguachica','Bosconia'],
+      'Chocó':['Quibdó','Istmina','Tumaco'],
+      'Córdoba':['Montería','Cereté','Lorica','Sahagún'],
+      'Cundinamarca':['Soacha','Fusagasugá','Facatativá','Zipaquirá','Girardot','Chía','Cajicá'],
+      'Guainía':['Inírida'],
+      'Guaviare':['San José del Guaviare'],
+      'Huila':['Neiva','Pitalito','Garzón','La Plata'],
+      'La Guajira':['Riohacha','Maicao','Uribia'],
+      'Magdalena':['Santa Marta','Ciénaga','Fundación'],
+      'Meta':['Villavicencio','Acacías','Granada'],
+      'Nariño':['Pasto','Tumaco','Ipiales','Túquerres'],
+      'Norte de Santander':['Cúcuta','Ocaña','Pamplona','Villa del Rosario'],
+      'Putumayo':['Mocoa','Puerto Asís'],
+      'Quindío':['Armenia','Calarcá','Montenegro'],
+      'Risaralda':['Pereira','Dosquebradas','Santa Rosa de Cabal'],
+      'San Andrés y Providencia':['San Andrés','Providencia'],
+      'Santander':['Bucaramanga','Floridablanca','Girón','Piedecuesta','Barrancabermeja'],
+      'Sucre':['Sincelejo','Corozal','Sampués'],
+      'Tolima':['Ibagué','Espinal','Melgar','Girardot'],
+      'Valle del Cauca':['Cali','Buenaventura','Palmira','Tuluá','Cartago','Buga','Yumbo'],
+      'Vaupés':['Mitú'],
+      'Vichada':['Puerto Carreño'],
+    }
+  },
+  'México': {
+    label:'Estado',
+    regions:{
+      'Aguascalientes':['Aguascalientes','Jesús María','Calvillo'],
+      'Baja California':['Tijuana','Mexicali','Ensenada','Rosarito'],
+      'Baja California Sur':['La Paz','Los Cabos','Loreto'],
+      'Campeche':['Campeche','Ciudad del Carmen'],
+      'Chiapas':['Tuxtla Gutiérrez','San Cristóbal de las Casas','Tapachula'],
+      'Chihuahua':['Chihuahua','Ciudad Juárez','Delicias','Cuauhtémoc'],
+      'Ciudad de México':['CDMX – Benito Juárez','CDMX – Miguel Hidalgo','CDMX – Coyoacán','CDMX – Cuauhtémoc','CDMX – Álvaro Obregón','CDMX – Tlalpan','CDMX – Iztapalapa'],
+      'Coahuila':['Saltillo','Torreón','Monclova','Piedras Negras'],
+      'Colima':['Colima','Manzanillo','Tecomán'],
+      'Durango':['Durango','Gómez Palacio','Lerdo'],
+      'Guanajuato':['León','Irapuato','Celaya','Salamanca','Guanajuato'],
+      'Guerrero':['Acapulco','Chilpancingo','Iguala','Zihuatanejo'],
+      'Hidalgo':['Pachuca','Tulancingo','Tula de Allende'],
+      'Jalisco':['Guadalajara','Zapopan','Tlaquepaque','Tonalá','Puerto Vallarta'],
+      'Estado de México':['Ecatepec','Naucalpan','Tlalnepantla','Toluca','Neza','Chimalhuacán'],
+      'Michoacán':['Morelia','Uruapan','Apatzingán','Zamora'],
+      'Morelos':['Cuernavaca','Jiutepec','Cuautla'],
+      'Nayarit':['Tepic','Bahía de Banderas','Xalisco'],
+      'Nuevo León':['Monterrey','San Nicolás','Guadalupe','Apodaca','San Pedro Garza García','Santa Catarina'],
+      'Oaxaca':['Oaxaca de Juárez','Tuxtepec','Juchitán','Puerto Escondido'],
+      'Puebla':['Puebla','Tehuacán','San Andrés Cholula','Atlixco'],
+      'Querétaro':['Querétaro','San Juan del Río','Corregidora'],
+      'Quintana Roo':['Cancún','Playa del Carmen','Cozumel','Tulum','Chetumal'],
+      'San Luis Potosí':['San Luis Potosí','Ciudad Valles','Matehuala'],
+      'Sinaloa':['Culiacán','Mazatlán','Los Mochis','Guasave'],
+      'Sonora':['Hermosillo','Ciudad Obregón','Nogales','Guaymas'],
+      'Tabasco':['Villahermosa','Cárdenas','Comalcalco'],
+      'Tamaulipas':['Reynosa','Matamoros','Nuevo Laredo','Tampico','Victoria'],
+      'Tlaxcala':['Tlaxcala','Apizaco','Huamantla'],
+      'Veracruz':['Veracruz','Xalapa','Coatzacoalcos','Córdoba','Orizaba'],
+      'Yucatán':['Mérida','Valladolid','Tizimín'],
+      'Zacatecas':['Zacatecas','Fresnillo','Guadalupe'],
+    }
+  },
+  'Estados Unidos': {
+    label:'Estado',
+    regions:{
+      'Alabama':['Birmingham','Montgomery','Huntsville'],
+      'Alaska':['Anchorage','Juneau','Fairbanks'],
+      'Arizona':['Phoenix','Tucson','Scottsdale','Tempe'],
+      'Arkansas':['Little Rock','Fort Smith','Fayetteville'],
+      'California':['Los Angeles','San Francisco','San Diego','Sacramento','San Jose','Fresno','Oakland'],
+      'Colorado':['Denver','Colorado Springs','Aurora','Boulder'],
+      'Connecticut':['Hartford','New Haven','Bridgeport'],
+      'Delaware':['Wilmington','Dover'],
+      'Florida':['Miami','Orlando','Tampa','Jacksonville','Fort Lauderdale','Hialeah'],
+      'Georgia':['Atlanta','Augusta','Savannah','Columbus'],
+      'Hawaii':['Honolulu','Pearl City','Hilo'],
+      'Idaho':['Boise','Meridian','Nampa'],
+      'Illinois':['Chicago','Aurora','Rockford','Naperville'],
+      'Indiana':['Indianapolis','Fort Wayne','Evansville'],
+      'Iowa':['Des Moines','Cedar Rapids','Davenport'],
+      'Kansas':['Wichita','Overland Park','Kansas City'],
+      'Kentucky':['Louisville','Lexington','Bowling Green'],
+      'Louisiana':['New Orleans','Baton Rouge','Shreveport'],
+      'Maine':['Portland','Lewiston','Bangor'],
+      'Maryland':['Baltimore','Frederick','Rockville'],
+      'Massachusetts':['Boston','Worcester','Springfield','Cambridge'],
+      'Michigan':['Detroit','Grand Rapids','Warren','Sterling Heights'],
+      'Minnesota':['Minneapolis','Saint Paul','Rochester'],
+      'Mississippi':['Jackson','Gulfport','Southaven'],
+      'Missouri':['Kansas City','Saint Louis','Springfield'],
+      'Montana':['Billings','Missoula','Great Falls'],
+      'Nebraska':['Omaha','Lincoln','Bellevue'],
+      'Nevada':['Las Vegas','Henderson','Reno'],
+      'New Hampshire':['Manchester','Nashua','Concord'],
+      'New Jersey':['Newark','Jersey City','Paterson','Trenton'],
+      'New Mexico':['Albuquerque','Las Cruces','Rio Rancho'],
+      'New York':['New York City','Buffalo','Rochester','Yonkers','Syracuse'],
+      'North Carolina':['Charlotte','Raleigh','Greensboro','Durham'],
+      'North Dakota':['Fargo','Bismarck','Grand Forks'],
+      'Ohio':['Columbus','Cleveland','Cincinnati','Toledo'],
+      'Oklahoma':['Oklahoma City','Tulsa','Norman'],
+      'Oregon':['Portland','Salem','Eugene'],
+      'Pennsylvania':['Philadelphia','Pittsburgh','Allentown','Erie'],
+      'Rhode Island':['Providence','Warwick','Cranston'],
+      'South Carolina':['Columbia','Charleston','Greenville'],
+      'South Dakota':['Sioux Falls','Rapid City','Aberdeen'],
+      'Tennessee':['Nashville','Memphis','Knoxville','Chattanooga'],
+      'Texas':['Houston','San Antonio','Dallas','Austin','Fort Worth','El Paso','Arlington'],
+      'Utah':['Salt Lake City','West Valley City','Provo'],
+      'Vermont':['Burlington','South Burlington','Rutland'],
+      'Virginia':['Virginia Beach','Norfolk','Chesapeake','Richmond'],
+      'Washington':['Seattle','Spokane','Tacoma','Vancouver'],
+      'West Virginia':['Charleston','Huntington','Morgantown'],
+      'Wisconsin':['Milwaukee','Madison','Green Bay'],
+      'Wyoming':['Cheyenne','Casper','Laramie'],
+    }
+  }
+};
+
+// Extra custom countries stored here
+let customCountries = {};
+
+/* ══════════════════════════════════════════
+   LÓGICA DE SELECTS EN CASCADA (FORMULARIO)
+══════════════════════════════════════════ */
+function show(id,val){ document.getElementById(id).style.display = val ? 'block' : 'none'; }
+
+function onPaisChange(){
+  const pais = document.getElementById('f_pais').value;
+  const isOtro = pais==='__otro__';
+  show('paisCustomRow', isOtro);
+  if(isOtro) { setTimeout(()=>document.getElementById('f_pais_custom').focus(), 50); }
+  else { document.getElementById('f_pais_custom').value=''; }
+
+  const rl = document.getElementById('regionLabel');
+  const rs = document.getElementById('f_region');
+  const geoData = GEO[pais] || customCountries[pais];
+
+  // reset region and city
+  show('regionCustomRow', false);
+  document.getElementById('f_region_custom').value='';
+  show('ciudadCustomRow', false);
+  document.getElementById('f_ciudad').value='';
+
+  if(geoData){
+    rl.textContent = geoData.label;
+    rs.innerHTML = '<option value="">Seleccionar…</option>';
+    Object.keys(geoData.regions).sort().forEach(r=>{
+      rs.innerHTML += `<option value="${r}">${r}</option>`;
+    });
+    rs.innerHTML += '<option value="__otro__">✏️ No está en la lista, agregar…</option>';
+    rs.style.display='';
+    document.getElementById('f_ciudad_sel').innerHTML='<option value="">— elige región primero —</option>';
+    document.getElementById('f_ciudad_sel').style.display='';
+  } else if(isOtro){
+    rl.textContent='Región / Estado';
+    rs.innerHTML='<option value="">—</option>';
+    rs.style.display='none';
+    show('regionCustomRow', true);
+    document.getElementById('f_ciudad_sel').style.display='none';
+    show('ciudadCustomRow', true);
+  } else {
+    rl.textContent='Departamento / Estado';
+    rs.innerHTML='<option value="">— elige país primero —</option>';
+    rs.style.display='';
+    document.getElementById('f_ciudad_sel').innerHTML='<option value="">— elige región primero —</option>';
+    document.getElementById('f_ciudad_sel').style.display='';
+  }
+}
+
+function onRegionChange(){
+  const pais = document.getElementById('f_pais').value;
+  const region = document.getElementById('f_region').value;
+  const cs = document.getElementById('f_ciudad_sel');
+
+  show('ciudadCustomRow', false);
+  document.getElementById('f_ciudad').value='';
+
+  if(region==='__otro__'){
+    show('regionCustomRow', true);
+    setTimeout(()=>document.getElementById('f_region_custom').focus(), 50);
+    cs.style.display='none';
+    show('ciudadCustomRow', true);
+    return;
+  }
+  show('regionCustomRow', false);
+  document.getElementById('f_region_custom').value='';
+
+  const geoData = GEO[pais]||customCountries[pais];
+  const cities = geoData?.regions[region]||[];
+  if(cities.length){
+    cs.innerHTML='<option value="">Seleccionar…</option>';
+    cities.forEach(c=>{ cs.innerHTML+=`<option value="${c}">${c}</option>`; });
+    cs.innerHTML+='<option value="__otro__">✏️ No está en la lista, agregar…</option>';
+    cs.style.display='';
+  } else {
+    cs.style.display='none';
+    show('ciudadCustomRow', true);
+  }
+}
+
+function onCiudadSelChange(){
+  const v = document.getElementById('f_ciudad_sel').value;
+  if(v==='__otro__'){
+    show('ciudadCustomRow', true);
+    setTimeout(()=>document.getElementById('f_ciudad').focus(), 50);
+    document.getElementById('f_ciudad').value='';
+  } else {
+    show('ciudadCustomRow', false);
+    document.getElementById('f_ciudad').value=v;
+  }
+}
+
+function getFormLocation(){
+  const paisSel = document.getElementById('f_pais').value;
+  const pais = paisSel==='__otro__' ? document.getElementById('f_pais_custom').value.trim() : paisSel;
+  let region = document.getElementById('f_region').value;
+  if(region==='__otro__') region = document.getElementById('f_region_custom').value.trim();
+  let ciudad = document.getElementById('f_ciudad_sel').value;
+  if(!ciudad||ciudad==='__otro__') ciudad = document.getElementById('f_ciudad').value.trim();
+  return {pais, region, ciudad};
+}
+
+function setFormLocation(pais, region, ciudad){
+  const ps = document.getElementById('f_pais');
+  if(GEO[pais]||customCountries[pais]){
+    ps.value=pais;
+    show('paisCustomRow', false);
+  } else if(pais){
+    ps.value='__otro__';
+    show('paisCustomRow', true);
+    document.getElementById('f_pais_custom').value=pais;
+  } else { ps.value=''; }
+  onPaisChange();
+
+  const rs = document.getElementById('f_region');
+  const geoData = GEO[pais]||customCountries[pais];
+  if(region && geoData?.regions[region]){
+    rs.value=region;
+    show('regionCustomRow', false);
+  } else if(region){
+    rs.value='__otro__';
+    show('regionCustomRow', true);
+    document.getElementById('f_region_custom').value=region;
+  }
+  onRegionChange();
+
+  const cs = document.getElementById('f_ciudad_sel');
+  const cities = (GEO[pais]||customCountries[pais])?.regions[region]||[];
+  if(ciudad && cities.includes(ciudad)){
+    cs.value=ciudad;
+    document.getElementById('f_ciudad').value=ciudad;
+    show('ciudadCustomRow', false);
+  } else if(ciudad){
+    cs.value='__otro__';
+    show('ciudadCustomRow', true);
+    document.getElementById('f_ciudad').value=ciudad;
+  }
+}
+
+/* ══════════════════════════════════════════
+   FILTRO REGIÓN EN TOOLBAR
+══════════════════════════════════════════ */
+function updateRegionFilter(){
+  const pais = document.getElementById('f_filtPais').value;
+  const rs = document.getElementById('f_filtRegion');
+  rs.innerHTML='<option value="">Todos los departamentos/estados</option>';
+  const geoData = GEO[pais];
+  if(pais && geoData){
+    document.getElementById('regionLabel') && (document.getElementById('regionLabel').textContent = geoData.label);
+    // update label of filter
+    rs.previousSibling; // no label here
+    Object.keys(geoData.regions).sort().forEach(r=>{
+      rs.innerHTML+=`<option value="${r}">${r}</option>`;
+    });
+    // also add custom regions from providers
+    const customRegions = [...new Set(providers.filter(p=>p.pais===pais).map(p=>p.region).filter(r=>r&&!geoData.regions[r]))];
+    customRegions.forEach(r=>{ rs.innerHTML+=`<option value="${r}">${r}</option>`; });
+  } else if(pais){
+    // custom country
+    const customRegions = [...new Set(providers.filter(p=>p.pais===pais).map(p=>p.region).filter(Boolean))];
+    customRegions.forEach(r=>{ rs.innerHTML+=`<option value="${r}">${r}</option>`; });
+  }
+}
+
+function initPaisFilter(){
+  const sel = document.getElementById('f_filtPais');
+  const cur = sel.value;
+  sel.innerHTML='<option value="">Todos los países</option>';
+  const allCountries = [...new Set([...Object.keys(GEO), ...providers.map(p=>p.pais).filter(Boolean)])].sort();
+  allCountries.forEach(c=>{ sel.innerHTML+=`<option value="${c}">${c}</option>`; });
+  if(cur) sel.value=cur;
+}
+
+/* ══════════════════════════════════════════
+   DATOS DE PROVEEDORES
+══════════════════════════════════════════ */
+const COLORS=[
+  {bg:'#E1F5EE',text:'#085041'},{bg:'#E6F1FB',text:'#0C447C'},
+  {bg:'#EEEDFE',text:'#26215C'},{bg:'#FAEEDA',text:'#633806'},
+  {bg:'#FAECE7',text:'#712B13'},{bg:'#FBEAF0',text:'#72243E'},
+  {bg:'#EAF3DE',text:'#27500A'},{bg:'#F1EFE8',text:'#444441'}
+];
+const STATUS={
+  'Activo':{bg:'#EAF3DE',c:'#27500A'},'En evaluación':{bg:'#FAEEDA',c:'#633806'},
+  'Pausado':{bg:'#F1EFE8',c:'#444441'},'Bloqueado':{bg:'#FCEBEB',c:'#791F1F'}
+};
+const FILE_ICONS={pdf:'📄',doc:'📝',docx:'📝',xls:'📊',xlsx:'📊',ppt:'📋',pptx:'📋',jpg:'🖼',jpeg:'🖼',png:'🖼',gif:'🖼',mp4:'🎬',mov:'🎬',mp3:'🎵',zip:'🗜',rar:'🗜'};
+function fileIcon(name,type){if(type==='link')return'🔗';const e=name.split('.').pop().toLowerCase();return FILE_ICONS[e]||'📎';}
+function fmtSize(b){if(!b)return'';if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+
+let providers=[
+  {id:1,nombre:'Grupo Luminary',pais:'México',region:'Ciudad de México',ciudad:'CDMX – Benito Juárez',cat:'Iluminación y sonido',status:'Activo',contacto:'Rafael Torres',tel:'+52 55 8823 4401',email:'rafael@luminary.mx',score:5,budget:'$$$ Alto (100k–500k)',cobertura:'Nacional',servicios:'Iluminación arquitectónica, sonido line array, generadores',notas:'Go-to para eventos premium. Descuento 10% con contrato anual. Pedir a Rafael 3 semanas antes.',attachments:[{id:'a1',type:'link',name:'Portafolio 2024',url:'https://drive.google.com',meta:'drive.google.com',date:'2024-03-10'},{id:'a2',type:'link',name:'Contrato marco vigente',url:'https://docs.google.com',meta:'docs.google.com',date:'2024-01-15'}]},
+  {id:2,nombre:'EvenTech México',pais:'México',region:'Nuevo León',ciudad:'Monterrey',cat:'Tecnología e interactividad',status:'Activo',contacto:'Sofía Mendoza',tel:'+52 81 7744 9900',email:'sofia@eventech.mx',score:5,budget:'$$$ Alto (100k–500k)',cobertura:'Nacional',servicios:'Video mapping, realidad aumentada, pantallas LED, gamificación',notas:'Requieren brief técnico detallado. Solo trabajan con 50% de anticipo.',attachments:[{id:'a3',type:'link',name:'Catálogo de equipos',url:'https://eventech.mx/catalogo',meta:'eventech.mx',date:'2024-02-20'}]},
+  {id:3,nombre:'Flash Studios',pais:'México',region:'Ciudad de México',ciudad:'CDMX – Coyoacán',cat:'Fotografía y video',status:'Activo',contacto:'Diego Ramírez',tel:'+52 55 6677 8899',email:'diego@flashstudios.mx',score:5,budget:'$$ Medio (20k–100k)',cobertura:'Nacional',servicios:'Fotografía editorial, video recap, transmisión en vivo, drone',notas:'Entrega en 48h. Pack completo con edición incluida. Los mejores para recaps ejecutivos.',attachments:[]},
+  {id:4,nombre:'Sabores & Experiencias',pais:'México',region:'Jalisco',ciudad:'Guadalajara',cat:'Catering y F&B',status:'Activo',contacto:'Carmen Ríos',tel:'+52 33 5511 2233',email:'carmen@sabores.com.mx',score:4,budget:'$$ Medio (20k–100k)',cobertura:'Regional',servicios:'Catering gourmet, barras de cocteles, coffee breaks, food trucks',notas:'Excelente presentación. Han fallado en eventos masivos (+500 pax). Ideales para ejecutivos.',attachments:[]},
+  {id:5,nombre:'Crea Eventos Bogotá',pais:'Colombia',region:'Bogotá D.C.',ciudad:'Bogotá',cat:'Escenografía y montaje',status:'Activo',contacto:'Laura Quintero',tel:'+57 310 444 8800',email:'laura@creaev.co',score:5,budget:'$$$ Alto (100k–500k)',cobertura:'Nacional',servicios:'Escenografías custom, stands, estructuras, carpas premium',notas:'Referencia de Coca-Cola Colombia. Los mejores en escenografía del país. Reservar con 1 mes.',attachments:[{id:'a4',type:'link',name:'Fotos evento Coca-Cola 2023',url:'https://drive.google.com',meta:'drive.google.com',date:'2023-11-05'}]},
+  {id:6,nombre:'Sonido Élite Colombia',pais:'Colombia',region:'Antioquia',ciudad:'Medellín',cat:'Iluminación y sonido',status:'Activo',contacto:'Andrés Mejía',tel:'+57 304 777 5500',email:'andres@sonidoelite.co',score:4,budget:'$$ Medio (20k–100k)',cobertura:'Regional',servicios:'Sonido line array, iluminación escénica, backline',notas:'Cubren Antioquia y Eje Cafetero. Precios competitivos. Muy puntuales.',attachments:[]},
+  {id:7,nombre:'Cartagena Sound Pro',pais:'Colombia',region:'Bolívar',ciudad:'Cartagena',cat:'Iluminación y sonido',status:'Activo',contacto:'Iván Herrera',tel:'+57 312 555 7788',email:'ivan@ctgsound.co',score:4,budget:'$$ Medio (20k–100k)',cobertura:'Regional',servicios:'Sonido line array, iluminación eventos, DJ técnico',notas:'Excelentes para eventos en la costa. Conocen bien los venues del centro histórico.',attachments:[]},
+  {id:8,nombre:'Barranquilla Produce',pais:'Colombia',region:'Atlántico',ciudad:'Barranquilla',cat:'Producción audiovisual',status:'Activo',contacto:'Claudia Rueda',tel:'+57 300 888 4412',email:'claudia@bqproduce.co',score:4,budget:'$$ Medio (20k–100k)',cobertura:'Regional',servicios:'Producción audiovisual, streaming, LED wall, operación técnica',notas:'Muy activos durante el Carnaval. Tienen contactos con todos los venues de Barranquilla.',attachments:[]},
+  {id:9,nombre:'LA Event Tech',pais:'Estados Unidos',region:'California',ciudad:'Los Angeles',cat:'Tecnología e interactividad',status:'Activo',contacto:'Mark Sullivan',tel:'+1 310 444 9988',email:'mark@laeventtech.com',score:4,budget:'$$$$ Premium (>500k)',cobertura:'Internacional',servicios:'AR/VR experiencial, pantallas holográficas, mapping avanzado',notas:'Para proyectos binacionales con presencia en LA. Hablan español.',attachments:[]},
+  {id:10,nombre:'SegurEvent',pais:'México',region:'Ciudad de México',ciudad:'CDMX – Cuauhtémoc',cat:'Seguridad y protocolo',status:'Bloqueado',contacto:'Bernardo Leal',tel:'+52 55 4400 5566',email:'bleal@segurevent.mx',score:2,budget:'$ Bajo (<20k)',cobertura:'Solo ciudad',servicios:'Control de acceso, guardias, protocolo de emergencias',notas:'BLOQUEADO. Falla en Evento Farma 2024: 2 guardias no se presentaron.',attachments:[{id:'a5',type:'link',name:'Reporte de incidente Farma 2024',url:'https://docs.google.com',meta:'docs.google.com',date:'2024-05-18'}]},
+];
+
+let editId=null, activeDetail=null;
+
+function avatar(nombre,idx){
+  const c=COLORS[idx%COLORS.length];
+  const init=nombre.trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toUpperCase()||'').join('');
+  return{bg:c.bg,text:c.text,init};
+}
+function stars(n){return'★'.repeat(n)+'☆'.repeat(5-n);}
+function countryClass(pais){
+  if(pais==='Colombia')return'c-co';
+  if(pais==='México')return'c-mx';
+  if(pais==='Estados Unidos')return'c-us';
+  return'c-other';
+}
+function countryCode(pais){
+  if(pais==='Colombia')return'🇨🇴 CO';
+  if(pais==='México')return'🇲🇽 MX';
+  if(pais==='Estados Unidos')return'🇺🇸 US';
+  return pais||'?';
+}
+
+function renderStats(){
+  const total=providers.length;
+  const activos=providers.filter(p=>p.status==='Activo').length;
+  const avg=total?(providers.reduce((a,b)=>a+b.score,0)/total).toFixed(1):'—';
+  const paises=[...new Set(providers.map(p=>p.pais).filter(Boolean))];
+  const paisText=paises.map(p=>p==='Colombia'?'🇨🇴':p==='México'?'🇲🇽':p==='Estados Unidos'?'🇺🇸':'🌐').join(' ');
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat"><div class="stat-n">${total}</div><div class="stat-l">Proveedores totales</div></div>
+    <div class="stat"><div class="stat-n" style="color:var(--teal-mid)">${activos}</div><div class="stat-l">Activos</div></div>
+    <div class="stat"><div class="stat-n">${avg}</div><div class="stat-l">Score promedio</div></div>
+    <div class="stat"><div class="stat-n" style="font-size:20px">${paisText}</div><div class="stat-l">${paises.length} país${paises.length!==1?'es':''}</div></div>
+  `;
+}
+
+function updateCatFilter(){
+  const sel=document.getElementById('catFilter');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Todas las categorías</option>';
+  [...new Set(providers.map(p=>p.cat))].sort().forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c;o.textContent=c;if(c===cur)o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+function filteredList(){
+  const s=document.getElementById('searchInput').value.toLowerCase();
+  const pais=document.getElementById('f_filtPais').value;
+  const region=document.getElementById('f_filtRegion').value;
+  const cat=document.getElementById('catFilter').value;
+  const status=document.getElementById('statusFilter').value;
+  const rating=document.getElementById('ratingFilter').value;
+  return providers.filter(p=>{
+    const m=!s||[p.nombre,p.contacto,p.servicios,p.cat,p.ciudad,p.region,p.pais,p.email].some(v=>v?.toLowerCase().includes(s));
+    return m&&(!pais||p.pais===pais)&&(!region||p.region===region)&&(!cat||p.cat===cat)&&(!status||p.status===status)&&(!rating||p.score>=parseInt(rating));
+  });
+}
+
+function renderGrid(){
+  renderStats();updateCatFilter();initPaisFilter();
+  const list=filteredList();
+  const g=document.getElementById('grid');
+  if(!list.length){g.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div>Sin resultados con estos filtros</div></div>';return;}
+  g.innerHTML=list.map(p=>{
+    const idx=providers.indexOf(p);
+    const av=avatar(p.nombre,idx);
+    const sc=STATUS[p.status]||{bg:'#F1EFE8',c:'#444441'};
+    const cc=countryClass(p.pais);
+    const cd=countryCode(p.pais);
+    const svcs=p.servicios.split(',').slice(0,2).map(s=>`<span class="tag" style="background:var(--gray-light);color:var(--text-2)">${s.trim()}</span>`).join('');
+    const att=(p.attachments||[]).length;
+    const loc=[p.region,p.ciudad].filter(Boolean).join(' · ');
+    return`<div class="card" onclick="openDetail(${p.id})">
+      <div class="card-top">
+        <div class="avatar" style="background:${av.bg};color:${av.text}">${av.init}</div>
+        <div class="card-info">
+          <div class="card-name">${p.nombre}</div>
+          <div class="card-sub">${p.cat}${loc?' · '+loc:''}</div>
+        </div>
+        <div class="card-score">${stars(p.score)}</div>
+      </div>
+      <div class="card-tags">
+        <span class="tag" style="background:${sc.bg};color:${sc.c}">${p.status}</span>
+        <span class="tag ${cc}">${cd}</span>
+        <span class="tag" style="background:var(--gray-light);color:var(--text-2)">${p.budget}</span>
+        ${svcs}
+      </div>
+      <div class="card-footer">
+        <span>👤 ${p.contacto||'—'}</span>
+        <span>📞 ${p.tel||'—'}</span>
+        ${att?`<span style="margin-left:auto">📎 ${att}</span>`:p.notas?'<span style="margin-left:auto">📝</span>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── ADJUNTOS ── */
+function renderAttachSection(pid){
+  const p=providers.find(x=>x.id===pid);
+  if(!p)return'';
+  const atts=p.attachments||[];
+  const items=atts.length?atts.map(a=>`
+    <div class="attach-item" id="att-${a.id}">
+      <span class="attach-item-icon">${fileIcon(a.name,a.type)}</span>
+      <div class="attach-item-info">
+        ${a.type==='link'
+          ?`<a class="attach-item-name" href="${a.url}" target="_blank" style="color:var(--blue);text-decoration:none">${a.name}</a>`
+          :`<div class="attach-item-name">${a.name}</div>`}
+        <div class="attach-item-meta">${a.meta||''} ${a.date?'· '+a.date:''}</div>
+      </div>
+      <div class="attach-item-actions">
+        ${a.type==='file'&&a.data?`<button class="attach-btn" title="Descargar" onclick="downloadFile(${pid},'${a.id}')">⬇</button>`:''}
+        ${a.type==='link'?`<button class="attach-btn" onclick="window.open('${a.url}','_blank')">↗</button>`:''}
+        <button class="attach-btn del" onclick="removeAttach(${pid},'${a.id}')">✕</button>
+      </div>
+    </div>`).join(''):'<div class="attach-empty">Sin archivos adjuntos aún</div>';
+  return`
+    <div class="section-title"><span>📎 Archivos y links <span style="font-weight:400;color:var(--text-3)">(${atts.length})</span></span></div>
+    <div class="attach-list" id="attachList-${pid}">${items}</div>
+    <div style="margin-top:10px">
+      <div class="attach-link-row">
+        <input type="text" id="linkUrl-${pid}" placeholder="Pegar link (Drive, Dropbox, web…)" onkeydown="if(event.key==='Enter')addLink(${pid})"/>
+        <input type="text" id="linkName-${pid}" placeholder="Nombre" style="max-width:130px" onkeydown="if(event.key==='Enter')addLink(${pid})"/>
+        <button class="btn btn-ghost btn-sm" onclick="addLink(${pid})">+ Link</button>
+      </div>
+      <div class="attach-zone" id="dropZone-${pid}" onclick="document.getElementById('fileInput-${pid}').click()"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="handleDrop(event,${pid})">
+        <input type="file" id="fileInput-${pid}" multiple onchange="handleFiles(event,${pid})"/>
+        <span class="attach-zone-icon">☁</span>
+        <span class="attach-zone-text">Arrastra archivos aquí o haz clic<br/><span style="font-size:11px">PDF, Word, Excel, imágenes, videos…</span></span>
+      </div>
+    </div>`;
+}
+
+function addLink(pid){
+  const uEl=document.getElementById(`linkUrl-${pid}`);
+  const nEl=document.getElementById(`linkName-${pid}`);
+  let url=uEl.value.trim(),name=nEl.value.trim();
+  if(!url){uEl.focus();return;}
+  if(!/^https?:\/\//i.test(url))url='https://'+url;
+  if(!name){try{name=new URL(url).hostname.replace('www.','')}catch(e){name=url;}}
+  const p=providers.find(x=>x.id===pid);if(!p)return;
+  p.attachments=p.attachments||[];
+  p.attachments.push({id:'a'+Date.now(),type:'link',name,url,meta:(()=>{try{return new URL(url).hostname.replace('www.','')}catch(e){return''}})(),date:new Date().toISOString().slice(0,10)});
+  uEl.value='';nEl.value='';
+  refreshAttachList(pid);renderGrid();
+}
+function handleFiles(e,pid){[...e.target.files].forEach(f=>readFile(f,pid));e.target.value='';}
+function handleDrop(e,pid){e.preventDefault();document.getElementById(`dropZone-${pid}`)?.classList.remove('drag-over');[...e.dataTransfer.files].forEach(f=>readFile(f,pid));}
+function readFile(file,pid){
+  const r=new FileReader();
+  r.onload=e=>{
+    const p=providers.find(x=>x.id===pid);if(!p)return;
+    p.attachments=p.attachments||[];
+    p.attachments.push({id:'a'+Date.now(),type:'file',name:file.name,meta:fmtSize(file.size),date:new Date().toISOString().slice(0,10),data:e.target.result,mime:file.type});
+    refreshAttachList(pid);renderGrid();
+  };r.readAsDataURL(file);
+}
+function downloadFile(pid,aid){
+  const p=providers.find(x=>x.id===pid);
+  const a=p?.attachments?.find(x=>x.id===aid);if(!a||!a.data)return;
+  const el=document.createElement('a');el.href=a.data;el.download=a.name;el.click();
+}
+function removeAttach(pid,aid){
+  const p=providers.find(x=>x.id===pid);if(!p)return;
+  p.attachments=(p.attachments||[]).filter(a=>a.id!==aid);
+  refreshAttachList(pid);renderGrid();
+}
+function refreshAttachList(pid){
+  const container=document.getElementById(`attachList-${pid}`);if(!container)return;
+  const p=providers.find(x=>x.id===pid);const atts=p?.attachments||[];
+  if(!atts.length){container.innerHTML='<div class="attach-empty">Sin archivos adjuntos aún</div>';return;}
+  container.innerHTML=atts.map(a=>`
+    <div class="attach-item">
+      <span class="attach-item-icon">${fileIcon(a.name,a.type)}</span>
+      <div class="attach-item-info">
+        ${a.type==='link'?`<a class="attach-item-name" href="${a.url}" target="_blank" style="color:var(--blue);text-decoration:none">${a.name}</a>`:`<div class="attach-item-name">${a.name}</div>`}
+        <div class="attach-item-meta">${a.meta||''} ${a.date?'· '+a.date:''}</div>
+      </div>
+      <div class="attach-item-actions">
+        ${a.type==='file'&&a.data?`<button class="attach-btn" onclick="downloadFile(${pid},'${a.id}')">⬇</button>`:''}
+        ${a.type==='link'?`<button class="attach-btn" onclick="window.open('${a.url}','_blank')">↗</button>`:''}
+        <button class="attach-btn del" onclick="removeAttach(${pid},'${a.id}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ── DETALLE ── */
+function openDetail(id){
+  const p=providers.find(x=>x.id===id);if(!p)return;
+  activeDetail=id;
+  const idx=providers.indexOf(p);
+  const av=avatar(p.nombre,idx);
+  const sc=STATUS[p.status]||{bg:'#F1EFE8',c:'#444441'};
+  const cc=countryClass(p.pais);
+  const svcs=p.servicios.split(',').map(s=>`<span class="tag" style="background:var(--gray-light);color:var(--text-2);margin-right:4px;margin-bottom:4px">${s.trim()}</span>`).join('');
+  document.getElementById('detailPanel').innerHTML=`
+    <div class="detail-head">
+      <div class="detail-avatar" style="background:${av.bg};color:${av.text}">${av.init}</div>
+      <div>
+        <div class="detail-name">${p.nombre}</div>
+        <div class="detail-cat">${p.cat}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+          <span class="tag" style="background:${sc.bg};color:${sc.c}">${p.status}</span>
+          <span class="tag ${cc}">${countryCode(p.pais)}</span>
+        </div>
+      </div>
+      <button class="close-btn" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="detail-body">
+      <div class="section-title"><span>Evaluación</span></div>
+      <div class="stars-big">${stars(p.score)}</div>
+      <div style="font-size:13px;color:var(--text-2);margin-top:2px">${p.score}/5 · ${p.budget} · ${p.cobertura}</div>
+      <div class="section-title"><span>Ubicación</span></div>
+      <div class="kv"><span class="k">País</span><span>${p.pais||'—'}</span></div>
+      <div class="kv"><span class="k">Departamento</span><span>${p.region||'—'}</span></div>
+      <div class="kv"><span class="k">Ciudad</span><span>${p.ciudad||'—'}</span></div>
+      <div class="section-title"><span>Contacto</span></div>
+      <div class="kv"><span class="k">Nombre</span><span>${p.contacto||'—'}</span></div>
+      <div class="kv"><span class="k">Teléfono</span><span>${p.tel||'—'}</span></div>
+      <div class="kv"><span class="k">Email</span><span style="color:var(--blue)">${p.email||'—'}</span></div>
+      <div class="section-title"><span>Servicios</span></div>
+      <div style="display:flex;flex-wrap:wrap">${svcs}</div>
+      ${p.notas?`<div class="section-title"><span>Notas internas</span></div><div class="note-box">${p.notas}</div>`:''}
+      ${renderAttachSection(id)}
+    </div>
+    <div class="detail-actions">
+      <button class="btn btn-ghost" onclick="editProvider(${p.id})">✏ Editar</button>
+      <button class="btn btn-ghost" onclick="copyContact(${p.id})">📋 Copiar contacto</button>
+      <button class="btn btn-danger" onclick="deleteProvider(${p.id})">🗑 Eliminar</button>
+    </div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');activeDetail=null;}
+
+function copyContact(id){
+  const p=providers.find(x=>x.id===id);if(!p)return;
+  const txt=`${p.nombre}\n${p.contacto}\n${p.tel}\n${p.email}`;
+  navigator.clipboard.writeText(txt).then(()=>{const b=event.target;const o=b.textContent;b.textContent='✓ Copiado';setTimeout(()=>b.textContent=o,1500);});
+}
+
+function openAdd(){
+  editId=null;
+  document.getElementById('modalTitle').textContent='Nuevo proveedor';
+  ['nombre','contacto','tel','email','servicios','notas'].forEach(f=>document.getElementById('f_'+f).value='');
+  document.getElementById('f_ciudad').value='';
+  document.getElementById('f_score').value='3';
+  document.getElementById('f_status').value='Activo';
+  document.getElementById('f_pais').value='';
+  show('paisCustomRow', false);
+  document.getElementById('f_pais_custom').value='';
+  document.getElementById('f_region').innerHTML='<option value="">— elige país primero —</option>';
+  document.getElementById('f_region').style.display='';
+  show('regionCustomRow', false);
+  document.getElementById('f_region_custom').value='';
+  document.getElementById('f_ciudad_sel').innerHTML='<option value="">— elige región primero —</option>';
+  document.getElementById('f_ciudad_sel').style.display='';
+  show('ciudadCustomRow', false);
+  document.getElementById('f_ciudad').value='';
+  document.getElementById('addOverlay').classList.add('open');
+}
+function closeAdd(){document.getElementById('addOverlay').classList.remove('open');}
+
+function saveProvider(){
+  const nombre=document.getElementById('f_nombre').value.trim();
+  if(!nombre){alert('El nombre de la empresa es requerido');return;}
+  const loc=getFormLocation();
+  if(!loc.pais){alert('Selecciona el país');return;}
+  const data={
+    nombre,pais:loc.pais,region:loc.region,ciudad:loc.ciudad,
+    cat:document.getElementById('f_cat').value,status:document.getElementById('f_status').value,
+    contacto:document.getElementById('f_contacto').value,tel:document.getElementById('f_tel').value,
+    email:document.getElementById('f_email').value,score:parseInt(document.getElementById('f_score').value),
+    budget:document.getElementById('f_budget').value,cobertura:document.getElementById('f_cobertura').value,
+    servicios:document.getElementById('f_servicios').value,notas:document.getElementById('f_notas').value,
+  };
+  if(editId!==null){
+    const idx=providers.findIndex(p=>p.id===editId);
+    providers[idx]={...providers[idx],...data};
+  }else{
+    data.id=Date.now();data.attachments=[];providers.push(data);
+  }
+  closeAdd();renderGrid();
+}
+
+function editProvider(id){
+  const p=providers.find(x=>x.id===id);if(!p)return;
+  editId=id;
+  document.getElementById('modalTitle').textContent='Editar proveedor';
+  document.getElementById('f_nombre').value=p.nombre;
+  document.getElementById('f_cat').value=p.cat;
+  document.getElementById('f_status').value=p.status;
+  document.getElementById('f_contacto').value=p.contacto;
+  document.getElementById('f_tel').value=p.tel;
+  document.getElementById('f_email').value=p.email;
+  document.getElementById('f_score').value=p.score;
+  document.getElementById('f_budget').value=p.budget;
+  document.getElementById('f_cobertura').value=p.cobertura;
+  document.getElementById('f_servicios').value=p.servicios;
+  document.getElementById('f_notas').value=p.notas;
+  setFormLocation(p.pais,p.region,p.ciudad);
+  closeDetail();
+  document.getElementById('addOverlay').classList.add('open');
+}
+
+function deleteProvider(id){
+  if(!confirm('¿Eliminar este proveedor? No se puede deshacer.'))return;
+  providers=providers.filter(p=>p.id!==id);
+  closeDetail();renderGrid();
+}
+
+function exportCSV(){
+  const cols=['nombre','pais','region','ciudad','cat','status','contacto','tel','email','score','budget','cobertura','servicios','notas'];
+  const head=['Empresa','País','Departamento/Estado','Ciudad','Categoría','Estado','Contacto','Teléfono','Email','Score','Presupuesto','Cobertura','Servicios','Notas'];
+  const rows=[head,...providers.map(p=>cols.map(c=>`"${(p[c]||'').toString().replace(/"/g,'""')}"`))] ;
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='proveedores-xp.csv';a.click();
+}
+
+document.getElementById('detailOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('detailOverlay'))closeDetail();});
+document.getElementById('addOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('addOverlay'))closeAdd();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();closeAdd();}});
+
+renderGrid();
+</script>
+
+
+</body></html>
