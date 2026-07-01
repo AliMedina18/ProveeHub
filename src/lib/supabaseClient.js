@@ -2,16 +2,22 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+export function getSupabaseConfigError() {
+  if (isSupabaseConfigured) return null;
+  return (
+    "Faltan NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY. " +
+    "Configúralas en Vercel → Project Settings → Environment Variables y vuelve a desplegar."
+  );
+}
 
 // createClient() lanza si recibe un string vacío, y eso rompe el build/prerender
 // en Vercel cuando las envs no están configuradas. Usamos un placeholder no vacío
 // para que el build siempre pase; el warning avisa igual en el navegador.
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!isSupabaseConfigured) {
   if (typeof window !== "undefined") {
-    console.warn(
-      "[ProveeHub] Faltan NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY. " +
-        "Configúralas en .env.local (desarrollo) o en Vercel → Settings → Environment Variables (producción)."
-    );
+    console.warn("[ProveeHub] " + getSupabaseConfigError());
   }
 }
 

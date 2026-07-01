@@ -1,9 +1,19 @@
-import { supabase, ATTACHMENTS_BUCKET } from "./supabaseClient";
+import {
+  supabase,
+  ATTACHMENTS_BUCKET,
+  getSupabaseConfigError,
+} from "./supabaseClient";
+
+function ensureSupabaseConfigured() {
+  const configError = getSupabaseConfigError();
+  if (configError) throw new Error(configError);
+}
 
 /* ──────────────────────────────────────────────────────────
    Catálogos (categorías, estados, presupuestos, cobertura)
    ────────────────────────────────────────────────────────── */
 export async function fetchCatalogos() {
+  ensureSupabaseConfigured();
   const [categorias, estados, presupuestos, coberturas] = await Promise.all([
     supabase.from("categorias").select("id,nombre").order("nombre"),
     supabase
@@ -31,6 +41,7 @@ export async function fetchCatalogos() {
    Geografía: país → región → ciudad, en forma de árbol
    ────────────────────────────────────────────────────────── */
 export async function fetchGeoTree() {
+  ensureSupabaseConfigured();
   const [paises, regiones, ciudades] = await Promise.all([
     supabase
       .from("paises")
@@ -61,6 +72,7 @@ export async function fetchGeoTree() {
    Proveedores
    ────────────────────────────────────────────────────────── */
 export async function fetchProveedores() {
+  ensureSupabaseConfigured();
   const { data, error } = await supabase
     .from("proveedores_detalle")
     .select("*")
@@ -70,6 +82,7 @@ export async function fetchProveedores() {
 }
 
 export async function fetchAdjuntos(proveedorId) {
+  ensureSupabaseConfigured();
   const { data, error } = await supabase
     .from("adjuntos")
     .select("*")
@@ -83,6 +96,7 @@ export async function fetchAdjuntos(proveedorId) {
 //            contacto, telefono, email, score, presupuestoId, coberturaId,
 //            notas, servicios: string[] }
 export async function guardarProveedor(payload) {
+  ensureSupabaseConfigured();
   const { data, error } = await supabase.rpc("guardar_proveedor", {
     p_id: payload.id || null,
     p_nombre: payload.nombre,
@@ -105,6 +119,7 @@ export async function guardarProveedor(payload) {
 }
 
 export async function eliminarProveedor(id) {
+  ensureSupabaseConfigured();
   const { error } = await supabase.from("proveedores").delete().eq("id", id);
   if (error) throw error;
 }
@@ -113,6 +128,7 @@ export async function eliminarProveedor(id) {
    Adjuntos: links y archivos (Supabase Storage)
    ────────────────────────────────────────────────────────── */
 export async function agregarLink(proveedorId, { nombre, url }) {
+  ensureSupabaseConfigured();
   let dominio = "";
   try {
     dominio = new URL(url).hostname.replace(/^www\./, "");
@@ -142,6 +158,7 @@ function fmtSize(bytes) {
 }
 
 export async function subirArchivo(proveedorId, file) {
+  ensureSupabaseConfigured();
   const path = `${proveedorId}/${Date.now()}-${file.name}`;
   const { error: uploadError } = await supabase.storage
     .from(ATTACHMENTS_BUCKET)
@@ -171,6 +188,7 @@ export async function subirArchivo(proveedorId, file) {
 }
 
 export async function eliminarAdjunto(adjunto) {
+  ensureSupabaseConfigured();
   if (adjunto.tipo === "file" && adjunto.storage_path) {
     await supabase.storage.from(ATTACHMENTS_BUCKET).remove([adjunto.storage_path]);
   }
