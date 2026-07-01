@@ -192,7 +192,7 @@ create or replace function guardar_proveedor(
   p_contacto_nombre text,
   p_telefono        text,
   p_email           text,
-  p_score           smallint,
+  p_score           integer,
   p_presupuesto_id  bigint,
   p_cobertura_id    bigint,
   p_notas           text,
