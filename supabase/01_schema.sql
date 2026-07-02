@@ -180,6 +180,21 @@ begin
   return v_ciudad_id;
 end; $$;
 
+do $$
+declare
+  fn regprocedure;
+begin
+  for fn in
+    select p.oid::regprocedure
+    from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.proname = 'guardar_proveedor'
+  loop
+    execute format('drop function if exists %s', fn);
+  end loop;
+end $$;
+
 -- Crea o actualiza un proveedor junto con su lista de servicios (texto libre).
 create or replace function guardar_proveedor(
   p_id              uuid,
@@ -212,13 +227,13 @@ begin
       telefono, email, score, presupuesto_id, cobertura_id, notas
     ) values (
       p_nombre, p_categoria_id, p_estado_id, v_ciudad_id, p_contacto_nombre,
-      p_telefono, p_email, p_score, p_presupuesto_id, p_cobertura_id, p_notas
+      p_telefono, p_email, p_score::smallint, p_presupuesto_id, p_cobertura_id, p_notas
     ) returning id into v_id;
   else
     update proveedores set
       nombre = p_nombre, categoria_id = p_categoria_id, estado_id = p_estado_id,
       ciudad_id = v_ciudad_id, contacto_nombre = p_contacto_nombre,
-      telefono = p_telefono, email = p_email, score = p_score,
+      telefono = p_telefono, email = p_email, score = p_score::smallint,
       presupuesto_id = p_presupuesto_id, cobertura_id = p_cobertura_id, notas = p_notas
     where id = p_id
     returning id into v_id;
