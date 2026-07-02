@@ -1,4 +1,69 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
+import { Search, X, ChevronDown, SlidersHorizontal, Check } from "lucide-react";
+
+const RATING_LABELS = { 4: "4+ estrellas", 3: "3+ estrellas" };
+
+function FilterSelect({ value, placeholder, options, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const selected = options.find((option) => option.value === value);
+  const label = selected?.label || placeholder;
+  const allOptions = [{ value: "", label: placeholder }, ...options];
+
+  useEffect(() => {
+    function onDocClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    function onKey(e) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  function pick(nextValue) {
+    onChange(nextValue);
+    setOpen(false);
+  }
+
+  return (
+    <div className="filter-select" ref={ref}>
+      <button
+        type="button"
+        className={`filter-select-trigger${open ? " open" : ""}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span>{label}</span>
+        <ChevronDown size={14} className="filter-select-chevron" />
+      </button>
+      <div className={`filter-select-menu${open ? " open" : ""}`} role="listbox">
+        {allOptions.map((option) => {
+          const active = option.value === value;
+          return (
+            <button
+              type="button"
+              key={`${placeholder}-${option.value || "all"}`}
+              className={`filter-select-option${active ? " active" : ""}`}
+              onClick={() => pick(option.value)}
+              role="option"
+              aria-selected={active}
+            >
+              <span>{option.label}</span>
+              {active && <Check size={14} />}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 export default function Toolbar({
   filters,
@@ -16,49 +81,75 @@ export default function Toolbar({
     });
   }
 
+  function clearOne(field) {
+    update(field, "");
+  }
+
+  function clearAll() {
+    setFilters({ search: "", pais: "", region: "", categoria: "", estado: "", rating: "" });
+  }
+
+  const activeChips = [
+    filters.pais && { field: "pais", label: filters.pais },
+    filters.region && { field: "region", label: filters.region },
+    filters.categoria && { field: "categoria", label: filters.categoria },
+    filters.estado && { field: "estado", label: filters.estado },
+    filters.rating && { field: "rating", label: RATING_LABELS[filters.rating] },
+  ].filter(Boolean);
+
+  const paisOptions = paisesDisponibles.map((p) => ({ value: p, label: p }));
+  const regionOptions = regionesDisponibles.map((r) => ({ value: r, label: r }));
+  const categoriaOptions = categoriasDisponibles.map((c) => ({ value: c, label: c }));
+  const estadoOptions = estadosDisponibles.map((s) => ({ value: s, label: s }));
+  const ratingOptions = [
+    { value: "4", label: "4+ estrellas" },
+    { value: "3", label: "3+ estrellas" },
+  ];
+
   return (
-    <div className="toolbar">
-      <div className="search-wrap">
-        <svg className="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
-        <input
-          type="text"
-          placeholder="Buscar proveedor, servicio, ciudad…"
-          value={filters.search}
-          onChange={(e) => update("search", e.target.value)}
-        />
+    <div className="toolbar-card">
+      <div className="toolbar">
+        <div className="search-wrap">
+          <Search size={15} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Buscar proveedor, servicio, ciudad…"
+            value={filters.search}
+            onChange={(e) => update("search", e.target.value)}
+          />
+          {filters.search && (
+            <button className="search-clear" onClick={() => update("search", "")} aria-label="Limpiar búsqueda">
+              <X size={13} />
+            </button>
+          )}
+        </div>
+
+        <FilterSelect value={filters.pais} placeholder="Todos los países" options={paisOptions} onChange={(v) => update("pais", v)} />
+        <FilterSelect value={filters.region} placeholder="Departamento / estado" options={regionOptions} onChange={(v) => update("region", v)} />
+        <FilterSelect value={filters.categoria} placeholder="Todas las categorías" options={categoriaOptions} onChange={(v) => update("categoria", v)} />
+        <FilterSelect value={filters.estado} placeholder="Todos los estados" options={estadoOptions} onChange={(v) => update("estado", v)} />
+        <FilterSelect value={filters.rating} placeholder="Cualquier score" options={ratingOptions} onChange={(v) => update("rating", v)} />
+
+        {activeChips.length > 0 && (
+          <button className="btn btn-ghost btn-sm" onClick={clearAll}>
+            <SlidersHorizontal size={13} />
+            Limpiar filtros
+          </button>
+        )}
       </div>
-      <select value={filters.pais} onChange={(e) => update("pais", e.target.value)}>
-        <option value="">Todos los países</option>
-        {paisesDisponibles.map((p) => (
-          <option key={p} value={p}>{p}</option>
-        ))}
-      </select>
-      <select value={filters.region} onChange={(e) => update("region", e.target.value)}>
-        <option value="">Todos los departamentos/estados</option>
-        {regionesDisponibles.map((r) => (
-          <option key={r} value={r}>{r}</option>
-        ))}
-      </select>
-      <select value={filters.categoria} onChange={(e) => update("categoria", e.target.value)}>
-        <option value="">Todas las categorías</option>
-        {categoriasDisponibles.map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-      </select>
-      <select value={filters.estado} onChange={(e) => update("estado", e.target.value)}>
-        <option value="">Todos los estados</option>
-        {estadosDisponibles.map((s) => (
-          <option key={s} value={s}>{s}</option>
-        ))}
-      </select>
-      <select value={filters.rating} onChange={(e) => update("rating", e.target.value)}>
-        <option value="">Cualquier score</option>
-        <option value="4">4+ ★</option>
-        <option value="3">3+ ★</option>
-      </select>
+
+      {activeChips.length > 0 && (
+        <div className="filter-chips">
+          {activeChips.map((chip) => (
+            <span className="filter-chip" key={chip.field}>
+              {chip.label}
+              <button onClick={() => clearOne(chip.field)} aria-label={`Quitar filtro ${chip.label}`}>
+                <X size={10} />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -20,11 +20,6 @@ export function avatarFor(nombre, idx) {
   return { ...c, init };
 }
 
-export function stars(n) {
-  const s = Number(n) || 0;
-  return "★".repeat(s) + "☆".repeat(5 - s);
-}
-
 export function countryClass(codigoIso) {
   if (codigoIso === "CO") return "c-co";
   if (codigoIso === "MX") return "c-mx";
@@ -32,32 +27,45 @@ export function countryClass(codigoIso) {
   return "c-other";
 }
 
-export function countryLabel(pais, bandera, codigoIso) {
-  if (!pais) return "?";
-  return `${bandera || "🌐"} ${codigoIso || pais}`;
+export function countryLabel(pais, codigoIso) {
+  if (!pais) return "";
+  return codigoIso || pais;
 }
 
-const FILE_ICONS = {
-  pdf: "📄",
-  doc: "📝",
-  docx: "📝",
-  xls: "📊",
-  xlsx: "📊",
-  ppt: "📋",
-  pptx: "📋",
-  jpg: "🖼",
-  jpeg: "🖼",
-  png: "🖼",
-  gif: "🖼",
-  mp4: "🎬",
-  mov: "🎬",
-  mp3: "🎵",
-  zip: "🗜",
-  rar: "🗜",
-};
+export function isPdfFile(file) {
+  if (!file) return false;
+  const name = (file.name || "").toLowerCase();
+  return file.type === "application/pdf" || name.endsWith(".pdf");
+}
 
-export function fileIcon(name, tipo) {
-  if (tipo === "link") return "🔗";
-  const ext = (name || "").split(".").pop().toLowerCase();
-  return FILE_ICONS[ext] || "📎";
+export function fmtDate(iso) {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleDateString("es-CO", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
+export const PURGE_GRACE_DAYS = 30;
+
+// Un proveedor desactivado se elimina definitivamente a los 30 días de
+// `desactivado_en`. Estas funciones calculan esa fecha y cuántos días faltan
+// para mostrarlo en la UI (tarjeta, panel de detalle).
+export function purgeDate(desactivadoEn, graceDays = PURGE_GRACE_DAYS) {
+  if (!desactivadoEn) return null;
+  const d = new Date(desactivadoEn);
+  d.setDate(d.getDate() + graceDays);
+  return d;
+}
+
+export function daysUntilPurge(desactivadoEn, graceDays = PURGE_GRACE_DAYS) {
+  const target = purgeDate(desactivadoEn, graceDays);
+  if (!target) return null;
+  const ms = target.getTime() - Date.now();
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
 }

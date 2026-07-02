@@ -141,14 +141,14 @@
         <option value="">Todos los departamentos/estados</option>
       </select>
       <select id="catFilter" onchange="renderGrid()"><option value="">Todas las categorías</option><option value="Catering y F&amp;B">Catering y F&amp;B</option><option value="Escenografía y montaje">Escenografía y montaje</option><option value="Fotografía y video">Fotografía y video</option><option value="Iluminación y sonido">Iluminación y sonido</option><option value="Producción audiovisual">Producción audiovisual</option><option value="Seguridad y protocolo">Seguridad y protocolo</option><option value="Tecnología e interactividad">Tecnología e interactividad</option></select>
-      <select id="statusFilter" onchange="renderGrid()">
+      <select id="statusFilter" onchange="renderGrid()" title="Filtrar por estado">
         <option value="">Todos los estados</option>
         <option value="Activo">Activo</option>
         <option value="En evaluación">En evaluación</option>
         <option value="Pausado">Pausado</option>
         <option value="Bloqueado">Bloqueado</option>
       </select>
-      <select id="ratingFilter" onchange="renderGrid()">
+      <select id="ratingFilter" onchange="renderGrid()" title="Filtrar por score">
         <option value="">Cualquier score</option>
         <option value="4">4+ ★</option>
         <option value="3">3+ ★</option>
@@ -612,8 +612,16 @@ function onPaisChange(){
   const pais = document.getElementById('f_pais').value;
   const isOtro = pais==='__otro__';
   show('paisCustomRow', isOtro);
-  if(isOtro) { setTimeout(()=>document.getElementById('f_pais_custom').focus(), 50); }
-  else { document.getElementById('f_pais_custom').value=''; }
+  if(isOtro) { 
+    setTimeout(()=>{
+      const el=document.getElementById('f_pais_custom');
+      if(el){el.focus();}
+    }, 50); 
+  }
+  else { 
+    const paisEl = document.getElementById('f_pais_custom');
+    if(paisEl){paisEl.value='';} 
+  }
 
   const rl = document.getElementById('regionLabel');
   const rs = document.getElementById('f_region');
@@ -621,33 +629,42 @@ function onPaisChange(){
 
   // reset region and city
   show('regionCustomRow', false);
-  document.getElementById('f_region_custom').value='';
+  const regionEl = document.getElementById('f_region_custom');
+  if(regionEl){regionEl.value='';}
   show('ciudadCustomRow', false);
-  document.getElementById('f_ciudad').value='';
+  const ciudadEl = document.getElementById('f_ciudad');
+  if(ciudadEl){ciudadEl.value='';}
 
   if(geoData){
-    rl.textContent = geoData.label;
+    if(rl){rl.textContent = geoData.label;}
     rs.innerHTML = '<option value="">Seleccionar…</option>';
     Object.keys(geoData.regions).sort().forEach(r=>{
       rs.innerHTML += `<option value="${r}">${r}</option>`;
     });
     rs.innerHTML += '<option value="__otro__">✏️ No está en la lista, agregar…</option>';
     rs.style.display='';
-    document.getElementById('f_ciudad_sel').innerHTML='<option value="">— elige región primero —</option>';
-    document.getElementById('f_ciudad_sel').style.display='';
+    const ciudadSel = document.getElementById('f_ciudad_sel');
+    if(ciudadSel){
+      ciudadSel.innerHTML='<option value="">— elige región primero —</option>';
+      ciudadSel.style.display='';
+    }
   } else if(isOtro){
-    rl.textContent='Región / Estado';
+    if(rl){rl.textContent='Región / Estado';}
     rs.innerHTML='<option value="">—</option>';
     rs.style.display='none';
     show('regionCustomRow', true);
-    document.getElementById('f_ciudad_sel').style.display='none';
+    const ciudadSel2 = document.getElementById('f_ciudad_sel');
+    if(ciudadSel2){ciudadSel2.style.display='none';}
     show('ciudadCustomRow', true);
   } else {
-    rl.textContent='Departamento / Estado';
+    if(rl){rl.textContent='Departamento / Estado';}
     rs.innerHTML='<option value="">— elige país primero —</option>';
     rs.style.display='';
-    document.getElementById('f_ciudad_sel').innerHTML='<option value="">— elige región primero —</option>';
-    document.getElementById('f_ciudad_sel').style.display='';
+    const ciudadSel3 = document.getElementById('f_ciudad_sel');
+    if(ciudadSel3){
+      ciudadSel3.innerHTML='<option value="">— elige región primero —</option>';
+      ciudadSel3.style.display='';
+    }
   }
 }
 
@@ -655,19 +672,26 @@ function onRegionChange(){
   const pais = document.getElementById('f_pais').value;
   const region = document.getElementById('f_region').value;
   const cs = document.getElementById('f_ciudad_sel');
+  
+  if(!cs){return;}
 
   show('ciudadCustomRow', false);
-  document.getElementById('f_ciudad').value='';
+  const ciudadEl = document.getElementById('f_ciudad');
+  if(ciudadEl){ciudadEl.value='';}
 
   if(region==='__otro__'){
     show('regionCustomRow', true);
-    setTimeout(()=>document.getElementById('f_region_custom').focus(), 50);
+    setTimeout(()=>{
+      const el = document.getElementById('f_region_custom');
+      if(el){el.focus();}
+    }, 50);
     cs.style.display='none';
     show('ciudadCustomRow', true);
     return;
   }
   show('regionCustomRow', false);
-  document.getElementById('f_region_custom').value='';
+  const regionEl = document.getElementById('f_region_custom');
+  if(regionEl){regionEl.value='';}
 
   const geoData = GEO[pais]||customCountries[pais];
   const cities = geoData?.regions[region]||[];
@@ -686,11 +710,16 @@ function onCiudadSelChange(){
   const v = document.getElementById('f_ciudad_sel').value;
   if(v==='__otro__'){
     show('ciudadCustomRow', true);
-    setTimeout(()=>document.getElementById('f_ciudad').focus(), 50);
-    document.getElementById('f_ciudad').value='';
-  } else {
+    setTimeout(()=>{
+      const el=document.getElementById('f_ciudad');
+      if(el){el.value='';el.focus();}
+    }, 50);
+  } else if(v){
     show('ciudadCustomRow', false);
     document.getElementById('f_ciudad').value=v;
+  } else {
+    show('ciudadCustomRow', false);
+    document.getElementById('f_ciudad').value='';
   }
 }
 
@@ -706,17 +735,22 @@ function getFormLocation(){
 
 function setFormLocation(pais, region, ciudad){
   const ps = document.getElementById('f_pais');
+  if(!ps)return;
+  
   if(GEO[pais]||customCountries[pais]){
-    ps.value=pais;
+    ps.value=pais||'';
     show('paisCustomRow', false);
   } else if(pais){
     ps.value='__otro__';
     show('paisCustomRow', true);
-    document.getElementById('f_pais_custom').value=pais;
+    const paisCustomEl = document.getElementById('f_pais_custom');
+    if(paisCustomEl){paisCustomEl.value=pais;}
   } else { ps.value=''; }
   onPaisChange();
 
   const rs = document.getElementById('f_region');
+  if(!rs)return;
+  
   const geoData = GEO[pais]||customCountries[pais];
   if(region && geoData?.regions[region]){
     rs.value=region;
@@ -724,20 +758,25 @@ function setFormLocation(pais, region, ciudad){
   } else if(region){
     rs.value='__otro__';
     show('regionCustomRow', true);
-    document.getElementById('f_region_custom').value=region;
+    const regionCustomEl = document.getElementById('f_region_custom');
+    if(regionCustomEl){regionCustomEl.value=region;}
   }
   onRegionChange();
 
   const cs = document.getElementById('f_ciudad_sel');
+  if(!cs)return;
+  
   const cities = (GEO[pais]||customCountries[pais])?.regions[region]||[];
   if(ciudad && cities.includes(ciudad)){
     cs.value=ciudad;
-    document.getElementById('f_ciudad').value=ciudad;
+    const ciudadEl = document.getElementById('f_ciudad');
+    if(ciudadEl){ciudadEl.value=ciudad;}
     show('ciudadCustomRow', false);
   } else if(ciudad){
     cs.value='__otro__';
     show('ciudadCustomRow', true);
-    document.getElementById('f_ciudad').value=ciudad;
+    const ciudadEl = document.getElementById('f_ciudad');
+    if(ciudadEl){ciudadEl.value=ciudad;}
   }
 }
 
@@ -747,12 +786,13 @@ function setFormLocation(pais, region, ciudad){
 function updateRegionFilter(){
   const pais = document.getElementById('f_filtPais').value;
   const rs = document.getElementById('f_filtRegion');
+  if(!rs)return;
+  
   rs.innerHTML='<option value="">Todos los departamentos/estados</option>';
   const geoData = GEO[pais];
   if(pais && geoData){
-    document.getElementById('regionLabel') && (document.getElementById('regionLabel').textContent = geoData.label);
-    // update label of filter
-    rs.previousSibling; // no label here
+    const regionLabel = document.getElementById('regionLabel');
+    if(regionLabel){regionLabel.textContent = geoData.label;}
     Object.keys(geoData.regions).sort().forEach(r=>{
       rs.innerHTML+=`<option value="${r}">${r}</option>`;
     });
@@ -768,6 +808,8 @@ function updateRegionFilter(){
 
 function initPaisFilter(){
   const sel = document.getElementById('f_filtPais');
+  if(!sel)return;
+  
   const cur = sel.value;
   sel.innerHTML='<option value="">Todos los países</option>';
   const allCountries = [...new Set([...Object.keys(GEO), ...providers.map(p=>p.pais).filter(Boolean)])].sort();
@@ -1057,6 +1099,9 @@ function openAdd(){
   document.getElementById('f_ciudad').value='';
   document.getElementById('f_score').value='3';
   document.getElementById('f_status').value='Activo';
+  document.getElementById('f_cat').value='Producción audiovisual';
+  document.getElementById('f_budget').value='$$ Medio (20k–100k)';
+  document.getElementById('f_cobertura').value='Nacional';
   document.getElementById('f_pais').value='';
   show('paisCustomRow', false);
   document.getElementById('f_pais_custom').value='';
@@ -1075,19 +1120,23 @@ function closeAdd(){document.getElementById('addOverlay').classList.remove('open
 function saveProvider(){
   const nombre=document.getElementById('f_nombre').value.trim();
   if(!nombre){alert('El nombre de la empresa es requerido');return;}
+  const cat=document.getElementById('f_cat').value;
+  if(!cat){alert('Selecciona una categoría');return;}
   const loc=getFormLocation();
   if(!loc.pais){alert('Selecciona el país');return;}
   const data={
     nombre,pais:loc.pais,region:loc.region,ciudad:loc.ciudad,
-    cat:document.getElementById('f_cat').value,status:document.getElementById('f_status').value,
+    cat:cat,status:document.getElementById('f_status').value,
     contacto:document.getElementById('f_contacto').value,tel:document.getElementById('f_tel').value,
-    email:document.getElementById('f_email').value,score:parseInt(document.getElementById('f_score').value),
+    email:document.getElementById('f_email').value,score:parseInt(document.getElementById('f_score').value)||3,
     budget:document.getElementById('f_budget').value,cobertura:document.getElementById('f_cobertura').value,
     servicios:document.getElementById('f_servicios').value,notas:document.getElementById('f_notas').value,
   };
   if(editId!==null){
     const idx=providers.findIndex(p=>p.id===editId);
-    providers[idx]={...providers[idx],...data};
+    if(idx!==-1){
+      providers[idx]={...providers[idx],...data};
+    }
   }else{
     data.id=Date.now();data.attachments=[];providers.push(data);
   }
@@ -1095,20 +1144,21 @@ function saveProvider(){
 }
 
 function editProvider(id){
-  const p=providers.find(x=>x.id===id);if(!p)return;
+  const p=providers.find(x=>x.id===id);
+  if(!p)return;
   editId=id;
   document.getElementById('modalTitle').textContent='Editar proveedor';
-  document.getElementById('f_nombre').value=p.nombre;
-  document.getElementById('f_cat').value=p.cat;
-  document.getElementById('f_status').value=p.status;
-  document.getElementById('f_contacto').value=p.contacto;
-  document.getElementById('f_tel').value=p.tel;
-  document.getElementById('f_email').value=p.email;
-  document.getElementById('f_score').value=p.score;
-  document.getElementById('f_budget').value=p.budget;
-  document.getElementById('f_cobertura').value=p.cobertura;
-  document.getElementById('f_servicios').value=p.servicios;
-  document.getElementById('f_notas').value=p.notas;
+  document.getElementById('f_nombre').value=p.nombre||'';
+  document.getElementById('f_cat').value=p.cat||'Producción audiovisual';
+  document.getElementById('f_status').value=p.status||'Activo';
+  document.getElementById('f_contacto').value=p.contacto||'';
+  document.getElementById('f_tel').value=p.tel||'';
+  document.getElementById('f_email').value=p.email||'';
+  document.getElementById('f_score').value=p.score||3;
+  document.getElementById('f_budget').value=p.budget||'$$ Medio (20k–100k)';
+  document.getElementById('f_cobertura').value=p.cobertura||'Nacional';
+  document.getElementById('f_servicios').value=p.servicios||'';
+  document.getElementById('f_notas').value=p.notas||'';
   setFormLocation(p.pais,p.region,p.ciudad);
   closeDetail();
   document.getElementById('addOverlay').classList.add('open');

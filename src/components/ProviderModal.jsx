@@ -1,22 +1,42 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { sileo } from "sileo";
+import {
+  Building2,
+  MapPin,
+  User,
+  Layers,
+  Star,
+  Phone,
+  Mail,
+  Globe2,
+  X,
+  PenSquare,
+} from "lucide-react";
+import { TextField, SelectField, TextAreaField, TagInput } from "./fields/Field";
 
 const emptyForm = {
   nombre: "",
   categoriaId: "",
   estadoId: "",
-  pais: "",
-  region: "",
-  ciudad: "",
   contacto: "",
   telefono: "",
   email: "",
-  score: "3",
+  score: 3,
   presupuestoId: "",
   coberturaId: "",
-  servicios: "",
+  servicios: [],
   notas: "",
 };
+
+const SCORE_LABELS = { 1: "Deficiente", 2: "Regular", 3: "Bueno", 4: "Muy bueno", 5: "Excelente" };
+
+const TABS = [
+  { id: "general", label: "General", icon: Building2 },
+  { id: "ubicacion", label: "Ubicación", icon: MapPin },
+  { id: "contacto", label: "Contacto", icon: User },
+  { id: "servicios", label: "Servicios", icon: Layers },
+];
 
 export default function ProviderModal({
   open,
@@ -26,7 +46,10 @@ export default function ProviderModal({
   catalogos,
   geo,
   editingProvider,
+  existingNames = [],
 }) {
+  const [tab, setTab] = useState("general");
+  const [duplicateConfirmed, setDuplicateConfirmed] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [paisSel, setPaisSel] = useState("");
   const [paisCustom, setPaisCustom] = useState("");
@@ -86,23 +109,22 @@ export default function ProviderModal({
 
   useEffect(() => {
     if (!open) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset tab & sync form fields when the modal (re)opens for add/edit
+    setTab("general");
+    setDuplicateConfirmed(false);
     if (editingProvider) {
       const p = editingProvider;
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync form with the provider being edited
       setForm({
         nombre: p.nombre || "",
         categoriaId: String(p.categoria_id || ""),
         estadoId: String(p.estado_id || ""),
-        pais: p.pais || "",
-        region: p.region || "",
-        ciudad: p.ciudad || "",
         contacto: p.contacto_nombre || "",
         telefono: p.telefono || "",
         email: p.email || "",
-        score: String(p.score ?? 3),
+        score: Number(p.score ?? 3),
         presupuestoId: String(p.presupuesto_id || ""),
         coberturaId: String(p.cobertura_id || ""),
-        servicios: (p.servicios || []).join(", "),
+        servicios: p.servicios || [],
         notas: p.notas || "",
       });
       initLocation(p.pais, p.region, p.ciudad);
@@ -145,28 +167,49 @@ export default function ProviderModal({
     ciudadSel === "__otro__" || !ciudadSel ? ciudadCustom.trim() : ciudadSel;
 
   function update(field, value) {
+    if (field === "nombre") setDuplicateConfirmed(false);
     setForm((f) => ({ ...f, [field]: value }));
   }
 
   function submit() {
     if (!form.nombre.trim()) {
-      alert("El nombre de la empresa es requerido");
-      return;
-    }
-    if (!finalPais) {
-      alert("Selecciona el país");
+      setTab("general");
+      sileo.warning({ title: "Falta el nombre", description: "Escribe el nombre de la empresa proveedora." });
       return;
     }
     if (!form.categoriaId) {
-      alert("Selecciona la categoría");
+      setTab("general");
+      sileo.warning({ title: "Falta la categoría", description: "Selecciona una categoría para el proveedor." });
+      return;
+    }
+    if (!finalPais) {
+      setTab("ubicacion");
+      sileo.warning({ title: "Falta el país", description: "Selecciona o escribe el país del proveedor." });
       return;
     }
     if (!form.estadoId) {
-      alert("Selecciona el estado");
+      setTab("general");
+      sileo.warning({ title: "Falta el estado", description: "Selecciona el estado del proveedor." });
       return;
     }
+
+    // Aviso de posible duplicado al crear (no bloquea, solo pide confirmar de nuevo)
+    if (!editingProvider && !duplicateConfirmed) {
+      const nameLower = form.nombre.trim().toLowerCase();
+      const dup = existingNames.some((n) => n.toLowerCase() === nameLower);
+      if (dup) {
+        setDuplicateConfirmed(true);
+        sileo.warning({
+          title: "Ya existe un proveedor con ese nombre",
+          description: "Presiona \"Guardar proveedor\" otra vez para crearlo de todas formas.",
+        });
+        return;
+      }
+    }
+
     onSave({
       id: editingProvider?.id,
+      updatedAt: editingProvider?.updated_at || null,
       nombre: form.nombre.trim(),
       categoriaId: Number(form.categoriaId),
       estadoId: Number(form.estadoId),
@@ -179,10 +222,7 @@ export default function ProviderModal({
       score: Number(form.score),
       presupuestoId: form.presupuestoId ? Number(form.presupuestoId) : null,
       coberturaId: form.coberturaId ? Number(form.coberturaId) : null,
-      servicios: form.servicios
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
+      servicios: form.servicios,
       notas: form.notas,
     });
   }
@@ -191,212 +231,229 @@ export default function ProviderModal({
     <div className="overlay open" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal">
         <div className="modal-head">
-          <h2>{editingProvider ? "Editar proveedor" : "Nuevo proveedor"}</h2>
-          <button className="close-btn" onClick={onClose}>✕</button>
-        </div>
-        <div className="modal-body">
-          <div className="field">
-            <label>Nombre de la empresa *</label>
-            <input
-              value={form.nombre}
-              onChange={(e) => update("nombre", e.target.value)}
-              placeholder="Ej. Luces & Escenarios S.A."
-            />
-          </div>
-
-          <div
-            style={{
-              background: "var(--gray-light)",
-              borderRadius: "var(--radius)",
-              padding: "14px 14px 4px",
-              marginBottom: 14,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: ".06em",
-                color: "var(--text-3)",
-                marginBottom: 10,
-              }}
-            >
-              📍 Ubicación
-            </div>
-            <div className="row3">
-              <div className="field">
-                <label>País *</label>
-                <select value={paisSel} onChange={(e) => handlePaisChange(e.target.value)}>
-                  <option value="">Seleccionar…</option>
-                  {geo.paises.map((p) => (
-                    <option key={p.id} value={p.nombre}>
-                      {p.bandera_emoji} {p.nombre}
-                    </option>
-                  ))}
-                  <option value="__otro__">✏️ Otro país…</option>
-                </select>
-                {paisSel === "__otro__" && (
-                  <div className="loc-custom-row">
-                    <input
-                      autoFocus
-                      placeholder="Escribe el nombre del país…"
-                      value={paisCustom}
-                      onChange={(e) => setPaisCustom(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="field">
-                <label>{regionLabel}</label>
-                <select
-                  value={regionSel}
-                  onChange={(e) => handleRegionChange(e.target.value)}
-                  disabled={!paisSel}
-                >
-                  <option value="">
-                    {paisSel ? "Seleccionar…" : "— elige país primero —"}
-                  </option>
-                  {regiones.map((r) => (
-                    <option key={r.id} value={r.nombre}>
-                      {r.nombre}
-                    </option>
-                  ))}
-                  <option value="__otro__">✏️ No está en la lista, agregar…</option>
-                </select>
-                {regionSel === "__otro__" && (
-                  <div className="loc-custom-row">
-                    <input
-                      autoFocus
-                      placeholder="Escribe el departamento o estado…"
-                      value={regionCustom}
-                      onChange={(e) => setRegionCustom(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="field">
-                <label>Ciudad / Municipio</label>
-                <select
-                  value={ciudades.find((c) => c.nombre === ciudadSel) ? ciudadSel : ciudadSel === "__otro__" ? "__otro__" : ""}
-                  onChange={(e) => handleCiudadChange(e.target.value)}
-                  disabled={!regionSel}
-                >
-                  <option value="">
-                    {regionSel ? "Seleccionar…" : "— elige región primero —"}
-                  </option>
-                  {ciudades.map((c) => (
-                    <option key={c.id} value={c.nombre}>
-                      {c.nombre}
-                    </option>
-                  ))}
-                  <option value="__otro__">✏️ No está en la lista, agregar…</option>
-                </select>
-                {(ciudadSel === "__otro__" || (!ciudades.find((c) => c.nombre === ciudadSel) && ciudadSel)) && (
-                  <div className="loc-custom-row">
-                    <input
-                      autoFocus
-                      placeholder="Escribe la ciudad o municipio…"
-                      value={ciudadCustom}
-                      onChange={(e) => setCiudadCustom(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
+          <div>
+            <h2>{editingProvider ? "Editar proveedor" : "Nuevo proveedor"}</h2>
+            <div className="modal-head-sub">
+              {editingProvider ? editingProvider.nombre : "Completa los datos por secciones"}
             </div>
           </div>
-
-          <div className="row2">
-            <div className="field">
-              <label>Categoría *</label>
-              <select value={form.categoriaId} onChange={(e) => update("categoriaId", e.target.value)}>
-                <option value="">Seleccionar…</option>
-                {catalogos.categorias.map((c) => (
-                  <option key={c.id} value={c.id}>{c.nombre}</option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label>Estado</label>
-              <select value={form.estadoId} onChange={(e) => update("estadoId", e.target.value)}>
-                {catalogos.estados.map((e2) => (
-                  <option key={e2.id} value={e2.id}>{e2.nombre}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="row2">
-            <div className="field">
-              <label>Contacto principal</label>
-              <input value={form.contacto} onChange={(e) => update("contacto", e.target.value)} placeholder="Nombre" />
-            </div>
-            <div className="field">
-              <label>Teléfono / WhatsApp</label>
-              <input value={form.telefono} onChange={(e) => update("telefono", e.target.value)} placeholder="+57 300…" />
-            </div>
-          </div>
-
-          <div className="row2">
-            <div className="field">
-              <label>Email</label>
-              <input value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="contacto@empresa.com" />
-            </div>
-            <div className="field">
-              <label>Score (1–5)</label>
-              <select value={form.score} onChange={(e) => update("score", e.target.value)}>
-                <option value="5">⭐⭐⭐⭐⭐ Excelente</option>
-                <option value="4">⭐⭐⭐⭐ Muy bueno</option>
-                <option value="3">⭐⭐⭐ Bueno</option>
-                <option value="2">⭐⭐ Regular</option>
-                <option value="1">⭐ Deficiente</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="row2">
-            <div className="field">
-              <label>Presupuesto</label>
-              <select value={form.presupuestoId} onChange={(e) => update("presupuestoId", e.target.value)}>
-                <option value="">—</option>
-                {catalogos.presupuestos.map((p) => (
-                  <option key={p.id} value={p.id}>{p.nombre}</option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label>Cobertura</label>
-              <select value={form.coberturaId} onChange={(e) => update("coberturaId", e.target.value)}>
-                <option value="">—</option>
-                {catalogos.coberturas.map((c) => (
-                  <option key={c.id} value={c.id}>{c.nombre}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="field">
-            <label>Servicios (separados por coma)</label>
-            <input
-              value={form.servicios}
-              onChange={(e) => update("servicios", e.target.value)}
-              placeholder="video mapping, pantallas LED…"
-            />
-          </div>
-          <div className="field">
-            <label>Notas internas</label>
-            <textarea
-              value={form.notas}
-              onChange={(e) => update("notas", e.target.value)}
-              placeholder="Historial, condiciones, advertencias…"
-            />
-          </div>
-        </div>
-        <div className="modal-foot">
-          <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-primary" onClick={submit} disabled={saving}>
-            {saving ? "Guardando…" : "Guardar proveedor"}
+          <button className="close-btn" onClick={onClose} aria-label="Cerrar">
+            <X size={18} />
           </button>
+        </div>
+
+        <div className="modal-body">
+          <div className="tab-bar">
+            {TABS.map((t) => (
+              <button
+                key={t.id}
+                className={`tab-btn${tab === t.id ? " active" : ""}`}
+                onClick={() => setTab(t.id)}
+                type="button"
+              >
+                <t.icon size={13} />
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {tab === "general" && (
+            <div className="tab-panel">
+              <div className="form-section">
+                <TextField
+                  label="Nombre de la empresa"
+                  required
+                  icon={<Building2 size={15} />}
+                  value={form.nombre}
+                  onChange={(v) => update("nombre", v)}
+                />
+              </div>
+              <div className="form-section row2">
+                <SelectField
+                  label="Categoría"
+                  required
+                  value={form.categoriaId}
+                  onChange={(v) => update("categoriaId", v)}
+                >
+                  <option value="">Seleccionar…</option>
+                  {catalogos.categorias.map((c) => (
+                    <option key={c.id} value={c.id}>{c.nombre}</option>
+                  ))}
+                </SelectField>
+                <SelectField label="Estado" value={form.estadoId} onChange={(v) => update("estadoId", v)}>
+                  {catalogos.estados.map((e2) => (
+                    <option key={e2.id} value={e2.id}>{e2.nombre}</option>
+                  ))}
+                </SelectField>
+              </div>
+              <div className="form-section">
+                <div className="form-section-title">
+                  <Star size={12} />
+                  Evaluación
+                </div>
+                <div className="score-picker">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      type="button"
+                      key={n}
+                      className={`score-btn${form.score === n ? " active" : ""}`}
+                      onClick={() => update("score", n)}
+                    >
+                      <Star size={15} fill={form.score >= n ? "var(--amber-star)" : "none"} color="var(--amber-star)" />
+                      <span>{SCORE_LABELS[n]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === "ubicacion" && (
+            <div className="tab-panel">
+              <div className="form-section row3">
+                <div>
+                  <SelectField label="País" required value={paisSel} onChange={handlePaisChange}>
+                    <option value="">Seleccionar…</option>
+                    {geo.paises.map((p) => (
+                      <option key={p.id} value={p.nombre}>{p.nombre}</option>
+                    ))}
+                    <option value="__otro__">Otro país…</option>
+                  </SelectField>
+                  {paisSel === "__otro__" && (
+                    <div className="loc-custom-row">
+                      <input
+                        autoFocus
+                        placeholder="Escribe el nombre del país…"
+                        value={paisCustom}
+                        onChange={(e) => setPaisCustom(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <SelectField label={regionLabel} value={regionSel} onChange={handleRegionChange} disabled={!paisSel}>
+                    <option value="">{paisSel ? "Seleccionar…" : "Elige país primero"}</option>
+                    {regiones.map((r) => (
+                      <option key={r.id} value={r.nombre}>{r.nombre}</option>
+                    ))}
+                    <option value="__otro__">No está en la lista…</option>
+                  </SelectField>
+                  {regionSel === "__otro__" && (
+                    <div className="loc-custom-row">
+                      <input
+                        autoFocus
+                        placeholder="Escribe el departamento o estado…"
+                        value={regionCustom}
+                        onChange={(e) => setRegionCustom(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <SelectField
+                    label="Ciudad / Municipio"
+                    value={ciudades.find((c) => c.nombre === ciudadSel) ? ciudadSel : ciudadSel === "__otro__" ? "__otro__" : ""}
+                    onChange={handleCiudadChange}
+                    disabled={!regionSel}
+                  >
+                    <option value="">{regionSel ? "Seleccionar…" : "Elige región primero"}</option>
+                    {ciudades.map((c) => (
+                      <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                    ))}
+                    <option value="__otro__">No está en la lista…</option>
+                  </SelectField>
+                  {(ciudadSel === "__otro__" || (!ciudades.find((c) => c.nombre === ciudadSel) && ciudadSel)) && (
+                    <div className="loc-custom-row">
+                      <input
+                        autoFocus
+                        placeholder="Escribe la ciudad o municipio…"
+                        value={ciudadCustom}
+                        onChange={(e) => setCiudadCustom(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === "contacto" && (
+            <div className="tab-panel">
+              <div className="form-section row2">
+                <TextField
+                  label="Contacto principal"
+                  icon={<User size={15} />}
+                  value={form.contacto}
+                  onChange={(v) => update("contacto", v)}
+                />
+                <TextField
+                  label="Teléfono / WhatsApp"
+                  icon={<Phone size={15} />}
+                  value={form.telefono}
+                  onChange={(v) => update("telefono", v)}
+                />
+              </div>
+              <div className="form-section">
+                <TextField
+                  label="Email"
+                  type="email"
+                  icon={<Mail size={15} />}
+                  value={form.email}
+                  onChange={(v) => update("email", v)}
+                />
+              </div>
+              <div className="form-section row2">
+                <SelectField label="Presupuesto" value={form.presupuestoId} onChange={(v) => update("presupuestoId", v)}>
+                  <option value="">—</option>
+                  {catalogos.presupuestos.map((p) => (
+                    <option key={p.id} value={p.id}>{p.nombre}</option>
+                  ))}
+                </SelectField>
+                <SelectField label="Cobertura" value={form.coberturaId} onChange={(v) => update("coberturaId", v)}>
+                  <option value="">—</option>
+                  {catalogos.coberturas.map((c) => (
+                    <option key={c.id} value={c.id}>{c.nombre}</option>
+                  ))}
+                </SelectField>
+              </div>
+            </div>
+          )}
+
+          {tab === "servicios" && (
+            <div className="tab-panel">
+              <div className="form-section">
+                <TagInput
+                  label="Servicios que ofrece"
+                  values={form.servicios}
+                  onChange={(v) => update("servicios", v)}
+                  placeholder="Ej. video mapping, pantallas LED…"
+                />
+              </div>
+              <div className="form-section">
+                <TextAreaField
+                  label="Notas internas"
+                  value={form.notas}
+                  onChange={(v) => update("notas", v)}
+                  placeholder="Historial, condiciones, advertencias…"
+                  rows={5}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="modal-foot">
+          <div style={{ fontSize: 11.5, color: "var(--text-3)", display: "flex", alignItems: "center", gap: 6 }}>
+            <Globe2 size={12} />
+            {finalPais || "Sin país"} {finalRegion ? `· ${finalRegion}` : ""}
+          </div>
+          <div className="modal-foot-right">
+            <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
+            <button className="btn btn-primary" onClick={submit} disabled={saving}>
+              <PenSquare size={14} />
+              {saving ? "Guardando…" : "Guardar proveedor"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

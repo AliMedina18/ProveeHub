@@ -1,6 +1,9 @@
 "use client";
 import { useRef, useState } from "react";
-import { fileIcon } from "@/lib/ui";
+import { sileo } from "sileo";
+import { FileText, Link2, Download, ExternalLink, X, UploadCloud, Paperclip, Plus } from "lucide-react";
+import { isPdfFile, fmtDate } from "@/lib/ui";
+import PdfPreviewModal from "./PdfPreviewModal";
 
 export default function AttachmentsSection({
   adjuntos,
@@ -13,6 +16,7 @@ export default function AttachmentsSection({
   const [linkName, setLinkName] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [preview, setPreview] = useState(null);
   const fileInputRef = useRef(null);
 
   async function submitLink() {
@@ -30,9 +34,19 @@ export default function AttachmentsSection({
   async function handleFiles(fileList) {
     const files = Array.from(fileList || []);
     if (!files.length) return;
+    const pdfs = files.filter(isPdfFile);
+    const rejected = files.filter((f) => !isPdfFile(f));
+    if (rejected.length) {
+      sileo.error({
+        title: "Solo se permiten archivos PDF",
+        description: rejected.map((f) => f.name).join(", "),
+      });
+    }
+    if (!pdfs.length) return;
     setBusy(true);
     try {
-      await onUploadFiles(files);
+      await onUploadFiles(pdfs);
+      sileo.success({ title: `${pdfs.length} PDF${pdfs.length > 1 ? "s" : ""} agregado${pdfs.length > 1 ? "s" : ""}` });
     } finally {
       setBusy(false);
     }
@@ -41,110 +55,148 @@ export default function AttachmentsSection({
   return (
     <>
       <div className="section-title">
-        <span>
-          📎 Archivos y links{" "}
-          <span style={{ fontWeight: 400, color: "var(--text-3)" }}>
+        <span className="stt-left">
+          <Paperclip size={12} />
+          Archivos y links
+          <span style={{ fontWeight: 400, color: "var(--text-3)", textTransform: "none", letterSpacing: 0 }}>
             ({adjuntos.length})
           </span>
         </span>
       </div>
-      <div className="attach-list">
-        {loading ? (
-          <div className="attach-empty">Cargando…</div>
-        ) : adjuntos.length ? (
-          adjuntos.map((a) => (
-            <div className="attach-item" key={a.id}>
-              <span className="attach-item-icon">{fileIcon(a.nombre, a.tipo)}</span>
+      {loading ? (
+        <div className="attach-empty">Cargando…</div>
+      ) : adjuntos.length ? (
+        <div className="attach-list">
+          {adjuntos.map((a) => (
+            <div
+              className="attach-item"
+              key={a.id}
+              onClick={() => (a.tipo === "file" ? setPreview(a) : window.open(a.url, "_blank"))}
+            >
+              <span className={`attach-thumb${a.tipo === "link" ? " link" : ""}`}>
+                {a.tipo === "link" ? <Link2 size={16} /> : <FileText size={16} />}
+              </span>
               <div className="attach-item-info">
-                {a.tipo === "link" ? (
-                  <a
-                    className="attach-item-name"
-                    href={a.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: "var(--blue)", textDecoration: "none" }}
-                  >
-                    {a.nombre}
-                  </a>
-                ) : (
-                  <div className="attach-item-name">{a.nombre}</div>
-                )}
+                <div className="attach-item-name">{a.nombre}</div>
                 <div className="attach-item-meta">
-                  {a.meta || ""} {a.creado_en ? "· " + a.creado_en.slice(0, 10) : ""}
+                  <span>{a.tipo === "link" ? "Link" : "PDF"}</span>
+                  {a.meta && <span>· {a.meta}</span>}
+                  {a.creado_en && <span>· {fmtDate(a.creado_en)}</span>}
                 </div>
               </div>
               <div className="attach-item-actions">
                 {a.tipo === "file" && a.url && (
-                  <a className="attach-btn" href={a.url} target="_blank" rel="noreferrer" title="Abrir/Descargar">
-                    ⬇
+                  <a
+                    className="attach-btn"
+                    href={a.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Descargar"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Download size={14} />
                   </a>
                 )}
                 {a.tipo === "link" && (
-                  <button className="attach-btn" onClick={() => window.open(a.url, "_blank")}>
-                    ↗
+                  <button
+                    className="attach-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(a.url, "_blank");
+                    }}
+                    title="Abrir"
+                  >
+                    <ExternalLink size={14} />
                   </button>
                 )}
-                <button className="attach-btn del" onClick={() => onRemove(a)}>✕</button>
+                <button
+                  className="attach-btn del"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemove(a);
+                  }}
+                  title="Eliminar"
+                >
+                  <X size={14} />
+                </button>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="attach-empty">Sin archivos adjuntos aún</div>
-        )}
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <div className="attach-link-row">
-          <input
-            type="text"
-            placeholder="Pegar link (Drive, Dropbox, web…)"
-            value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submitLink()}
-          />
-          <input
-            type="text"
-            placeholder="Nombre"
-            style={{ maxWidth: 130 }}
-            value={linkName}
-            onChange={(e) => setLinkName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && submitLink()}
-          />
-          <button className="btn btn-ghost btn-sm" onClick={submitLink} disabled={busy}>
-            + Link
+          ))}
+        </div>
+      ) : (
+        <div className="attach-empty">Sin archivos ni links adjuntos aún</div>
+      )}
+
+      <div className="attach-add-grid">
+        <div className="attach-add-card">
+          <span className="attach-add-label">
+            <Link2 size={12} />
+            Agregar link
+          </span>
+          <div className="attach-link-row">
+            <input
+              type="text"
+              placeholder="Pegar link (Drive, Dropbox, web…)"
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submitLink()}
+            />
+            <input
+              type="text"
+              placeholder="Nombre (opcional)"
+              value={linkName}
+              onChange={(e) => setLinkName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && submitLink()}
+            />
+          </div>
+          <button className="btn btn-ghost btn-sm" onClick={submitLink} disabled={busy || !linkUrl.trim()}>
+            <Plus size={13} />
+            Agregar link
           </button>
         </div>
-        <div
-          className={`attach-zone${dragOver ? " drag-over" : ""}`}
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragOver(true);
-          }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setDragOver(false);
-            handleFiles(e.dataTransfer.files);
-          }}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            style={{ display: "none" }}
-            onChange={(e) => {
-              handleFiles(e.target.files);
-              e.target.value = "";
-            }}
-          />
-          <span className="attach-zone-icon">☁</span>
-          <span className="attach-zone-text">
-            {busy ? "Subiendo…" : "Arrastra archivos aquí o haz clic"}
-            <br />
-            <span style={{ fontSize: 11 }}>PDF, Word, Excel, imágenes, videos…</span>
+
+        <div className="attach-add-card">
+          <span className="attach-add-label">
+            <FileText size={12} />
+            Subir PDF
           </span>
+          <div
+            className={`attach-zone${dragOver ? " drag-over" : ""}`}
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              handleFiles(e.dataTransfer.files);
+            }}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf,.pdf"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => {
+                handleFiles(e.target.files);
+                e.target.value = "";
+              }}
+            />
+            <span className="attach-zone-icon">
+              <UploadCloud size={16} />
+            </span>
+            <span className="attach-zone-text">
+              {busy ? "Subiendo…" : "Arrastra o haz clic"}
+              <small>Solo PDF</small>
+            </span>
+          </div>
         </div>
       </div>
+
+      <PdfPreviewModal open={!!preview} adjunto={preview} onClose={() => setPreview(null)} />
     </>
   );
 }

@@ -94,7 +94,11 @@ export async function fetchAdjuntos(proveedorId) {
 
 // payload: { id?, nombre, categoriaId, estadoId, pais, region, ciudad,
 //            contacto, telefono, email, score, presupuestoId, coberturaId,
-//            notas, servicios: string[] }
+//            notas, servicios: string[], updatedAt? }
+// `updatedAt` es el valor que el cliente tenía cargado al abrir el formulario.
+// Si alguien más editó el registro mientras tanto, el RPC lanza
+// 'CONFLICTO_EDICION' en vez de sobrescribir en silencio (ver guardar_proveedor
+// en supabase/05_concurrencia_realtime.sql).
 export async function guardarProveedor(payload) {
   ensureSupabaseConfigured();
   const { data, error } = await supabase.rpc("guardar_proveedor", {
@@ -113,15 +117,53 @@ export async function guardarProveedor(payload) {
     p_cobertura_id: payload.coberturaId,
     p_notas: payload.notas || null,
     p_servicios: payload.servicios || [],
+    p_expected_updated_at: payload.updatedAt || null,
   });
   if (error) throw error;
   return data; // uuid del proveedor
 }
 
+// Actualización ligera de un solo campo (score), pensada para el clic rápido
+// en las estrellas del panel de detalle. No pasa por el chequeo de conflicto
+// de guardar_proveedor porque el riesgo de choque en un solo campo es bajo
+// y no vale la pena interrumpir al usuario por eso.
+export async function actualizarScore(id, score) {
+  ensureSupabaseConfigured();
+  const { error } = await supabase.from("proveedores").update({ score }).eq("id", id);
+  if (error) throw error;
+}
+
+// Eliminación directa e inmediata. Ya no se usa desde la UI (se reemplazó
+// por desactivarProveedor + purga a 30 días), pero se deja disponible por si
+// se necesita para alguna herramienta administrativa futura.
 export async function eliminarProveedor(id) {
   ensureSupabaseConfigured();
   const { error } = await supabase.from("proveedores").delete().eq("id", id);
   if (error) throw error;
+}
+
+// "Eliminar" desde la UI en realidad desactiva: el proveedor queda marcado
+// (desactivado_en) y sigue visible hasta que se purga automáticamente a los
+// 30 días (ver purgarVencidos) o alguien lo reactiva antes.
+export async function desactivarProveedor(id) {
+  ensureSupabaseConfigured();
+  const { error } = await supabase.rpc("desactivar_proveedor", { p_id: id });
+  if (error) throw error;
+}
+
+export async function reactivarProveedor(id) {
+  ensureSupabaseConfigured();
+  const { error } = await supabase.rpc("reactivar_proveedor", { p_id: id });
+  if (error) throw error;
+}
+
+// Se llama una vez al cargar la app (fire-and-forget): borra definitivamente
+// los proveedores que llevan 30+ días desactivados. Devuelve cuántos borró.
+export async function purgarVencidos() {
+  ensureSupabaseConfigured();
+  const { data, error } = await supabase.rpc("purgar_proveedores_vencidos");
+  if (error) throw error;
+  return data;
 }
 
 /* ──────────────────────────────────────────────────────────

@@ -1,27 +1,39 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { sileo } from "sileo";
+import { AlertTriangle } from "lucide-react";
 import Header from "@/components/Header";
 import StatsRow from "@/components/StatsRow";
 import Toolbar from "@/components/Toolbar";
 import ProviderGrid from "@/components/ProviderGrid";
 import ProviderModal from "@/components/ProviderModal";
 import DetailPanel from "@/components/DetailPanel";
-import Toast from "@/components/Toast";
+import MobileFab from "@/components/MobileFab";
+import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
 import {
   fetchCatalogos,
   fetchGeoTree,
   fetchProveedores,
   fetchAdjuntos,
   guardarProveedor,
-  eliminarProveedor,
+  desactivarProveedor,
+  reactivarProveedor,
+  purgarVencidos,
+  actualizarScore,
   agregarLink,
   subirArchivo,
   eliminarAdjunto,
 } from "@/lib/api";
+import { exportExcel, exportPDF } from "@/lib/export";
 
 const emptyCatalogos = { categorias: [], estados: [], presupuestos: [], coberturas: [] };
 const emptyGeo = { paises: [], regionesPorPais: {}, ciudadesPorRegion: {} };
 const emptyFilters = { search: "", pais: "", region: "", categoria: "", estado: "", rating: "" };
+const MAX_NOTIFICATIONS = 30;
+
+function newNotifId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 export default function Page() {
   const [providers, setProviders] = useState([]);
@@ -30,6 +42,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [filters, setFilters] = useState(emptyFilters);
+  const [page, setPage] = useState(1);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProvider, setEditingProvider] = useState(null);
@@ -39,12 +52,18 @@ export default function Page() {
   const [adjuntos, setAdjuntos] = useState([]);
   const [adjuntosLoading, setAdjuntosLoading] = useState(false);
 
-  const [toast, setToast] = useState("");
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  function notify(msg) {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2500);
-  }
+  const refreshProviders = useCallback(async () => {
+    const provs = await fetchProveedores();
+    setProviders(provs);
+  }, []);
+
+  const refreshGeo = useCallback(async () => {
+    const geoTree = await fetchGeoTree();
+    setGeo(geoTree);
+  }, []);
 
   const loadAll = useCallback(async () => {
     setLoading(true);
@@ -58,6 +77,18 @@ export default function Page() {
       setCatalogos(cat);
       setGeo(geoTree);
       setProviders(provs);
+
+      // Purga silenciosa de proveedores que llevan 30+ días desactivados.
+      // No bloquea la carga ni molesta al usuario; si borró algo, refresca.
+      purgarVencidos()
+        .then((count) => {
+          if (count > 0) refreshProviders();
+        })
+        .catch((err) => {
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[ProveeHub] purga de vencidos omitida:", err?.message || err);
+          }
+        });
     } catch (err) {
       console.error(err);
       setLoadError(
@@ -67,22 +98,46 @@ export default function Page() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [refreshProviders]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount
     loadAll();
   }, [loadAll]);
 
-  const refreshProviders = useCallback(async () => {
-    const provs = await fetchProveedores();
-    setProviders(provs);
-  }, []);
-
-  const refreshGeo = useCallback(async () => {
-    const geoTree = await fetchGeoTree();
-    setGeo(geoTree);
-  }, []);
+  /* ── Tiempo real: 30 personas pueden estar editando a la vez.
+     Nos suscribimos a cambios en `proveedores` para mantener la lista
+     sincronizada y alimentar la campanita de notificaciones. Requiere
+     haber corrido supabase/05_concurrencia_realtime.sql (habilita la
+     réplica de la tabla al canal de Realtime). ── */
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const channel = supabase
+      .channel("proveedores-actividad")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "proveedores" },
+        (payload) => {
+          const row = payload.new && Object.keys(payload.new).length ? payload.new : payload.old;
+          const nombre = row?.nombre || "un proveedor";
+          const type =
+            payload.eventType === "INSERT" ? "insert" : payload.eventType === "DELETE" ? "delete" : "update";
+          const text =
+            type === "insert"
+              ? `Se agregó "${nombre}"`
+              : type === "delete"
+                ? `Se eliminó "${nombre}"`
+                : `Se actualizó "${nombre}"`;
+          setNotifications((prev) => [{ id: newNotifId(), type, text, at: Date.now() }, ...prev].slice(0, MAX_NOTIFICATIONS));
+          setUnreadCount((c) => c + 1);
+          refreshProviders();
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refreshProviders]);
 
   /* ── Filtros ── */
   const filteredProviders = useMemo(() => {
@@ -113,6 +168,14 @@ export default function Page() {
     });
   }, [providers, filters]);
 
+  // Volver a la primera página cada vez que cambian los filtros
+  // (ajuste de estado durante el render, sin efecto: evita renders en cascada)
+  const [filtersSnapshot, setFiltersSnapshot] = useState(filters);
+  if (filters !== filtersSnapshot) {
+    setFiltersSnapshot(filters);
+    setPage(1);
+  }
+
   const paisesDisponibles = useMemo(
     () => geo.paises.map((p) => p.nombre),
     [geo.paises]
@@ -131,6 +194,7 @@ export default function Page() {
     () => catalogos.estados.map((e) => e.nombre),
     [catalogos.estados]
   );
+  const existingNames = useMemo(() => providers.map((p) => p.nombre), [providers]);
 
   /* ── Modal alta/edición ── */
   function openAdd() {
@@ -153,10 +217,26 @@ export default function Page() {
       await guardarProveedor(payload);
       await Promise.all([refreshProviders(), refreshGeo()]);
       closeModal();
-      notify(payload.id ? "Proveedor actualizado" : "Proveedor agregado");
+      sileo.success({ title: payload.id ? "Proveedor actualizado" : "Proveedor agregado" });
     } catch (err) {
       console.error(err);
-      alert("Error al guardar: " + (err?.message || "desconocido"));
+      const msg = err?.message || "";
+      if (msg.includes("CONFLICTO_EDICION")) {
+        sileo.error({
+          title: "Alguien más editó este proveedor",
+          description: "Los datos cambiaron mientras lo tenías abierto. Recarga para ver la versión más reciente y vuelve a intentar.",
+          duration: null,
+          button: {
+            title: "Recargar datos",
+            onClick: () => {
+              refreshProviders();
+              closeModal();
+            },
+          },
+        });
+      } else {
+        sileo.error({ title: "Error al guardar", description: msg || "Ocurrió un error desconocido." });
+      }
     } finally {
       setSaving(false);
     }
@@ -190,16 +270,49 @@ export default function Page() {
     setAdjuntos([]);
   }
 
-  async function handleDelete(id) {
-    if (!confirm("¿Eliminar este proveedor? No se puede deshacer.")) return;
+  // "Eliminar" no borra al instante: desactiva el proveedor. Si nadie lo
+  // reactiva, se purga solo a los 30 días (ver purgarVencidos en loadAll).
+  async function handleDeactivate(id) {
+    const provider = providers.find((p) => p.id === id);
     try {
-      await eliminarProveedor(id);
+      await desactivarProveedor(id);
       await refreshProviders();
       closeDetail();
-      notify("Proveedor eliminado");
+      sileo.success({
+        title: "Proveedor desactivado",
+        description: provider?.nombre ? `${provider.nombre} se eliminará en 30 días si no se reactiva.` : undefined,
+      });
     } catch (err) {
       console.error(err);
-      alert("Error al eliminar: " + (err?.message || "desconocido"));
+      sileo.error({ title: "Error al desactivar", description: err?.message || "Ocurrió un error desconocido." });
+      throw err;
+    }
+  }
+
+  async function handleReactivate(id) {
+    const provider = providers.find((p) => p.id === id);
+    try {
+      await reactivarProveedor(id);
+      await refreshProviders();
+      sileo.success({ title: "Proveedor reactivado", description: provider?.nombre || undefined });
+    } catch (err) {
+      console.error(err);
+      sileo.error({ title: "Error al reactivar", description: err?.message || "Ocurrió un error desconocido." });
+      throw err;
+    }
+  }
+
+  // Clic rápido en las estrellas del panel de detalle: actualización
+  // optimista (se ve al instante) + persistencia directa, sin pasar por el
+  // chequeo de conflicto completo (un solo campo, riesgo bajo de choque).
+  async function handleUpdateScore(id, score) {
+    setProviders((prev) => prev.map((p) => (p.id === id ? { ...p, score } : p)));
+    try {
+      await actualizarScore(id, score);
+    } catch (err) {
+      console.error(err);
+      sileo.error({ title: "No se pudo actualizar la calificación", description: err?.message });
+      await refreshProviders();
     }
   }
 
@@ -209,9 +322,10 @@ export default function Page() {
       const data = await fetchAdjuntos(detailId);
       setAdjuntos(data);
       await refreshProviders();
+      sileo.success({ title: "Link agregado" });
     } catch (err) {
       console.error(err);
-      alert("Error al agregar link: " + (err?.message || "desconocido"));
+      sileo.error({ title: "Error al agregar link", description: err?.message || "Ocurrió un error desconocido." });
     }
   }
 
@@ -225,7 +339,7 @@ export default function Page() {
       await refreshProviders();
     } catch (err) {
       console.error(err);
-      alert("Error al subir archivo: " + (err?.message || "desconocido"));
+      sileo.error({ title: "Error al subir archivo", description: err?.message || "Ocurrió un error desconocido." });
     }
   }
 
@@ -237,36 +351,26 @@ export default function Page() {
       await refreshProviders();
     } catch (err) {
       console.error(err);
-      alert("Error al eliminar adjunto: " + (err?.message || "desconocido"));
+      sileo.error({ title: "Error al eliminar adjunto", description: err?.message || "Ocurrió un error desconocido." });
     }
   }
 
-  /* ── Export CSV ── */
-  function exportCSV() {
-    const cols = [
-      ["nombre", "Empresa"],
-      ["pais", "País"],
-      ["region", "Departamento/Estado"],
-      ["ciudad", "Ciudad"],
-      ["categoria", "Categoría"],
-      ["estado", "Estado"],
-      ["contacto_nombre", "Contacto"],
-      ["telefono", "Teléfono"],
-      ["email", "Email"],
-      ["score", "Score"],
-      ["presupuesto", "Presupuesto"],
-      ["cobertura", "Cobertura"],
-      ["notas", "Notas"],
-    ];
-    const head = cols.map((c) => c[1]);
-    const rows = providers.map((p) =>
-      cols.map(([key]) => `"${String(p[key] ?? "").replace(/"/g, '""')}"`)
-    );
-    const csv = [head, ...rows].map((r) => r.join(",")).join("\n");
-    const a = document.createElement("a");
-    a.href = "data:text/csv;charset=utf-8,﻿" + encodeURIComponent(csv);
-    a.download = "proveedores-xp.csv";
-    a.click();
+  /* ── Exportar ── */
+  async function handleExportExcel() {
+    try {
+      await exportExcel(filteredProviders, "proveedores-xp.xlsx");
+    } catch (err) {
+      console.error(err);
+      sileo.error({ title: "No se pudo exportar a Excel" });
+    }
+  }
+  async function handleExportPDF() {
+    try {
+      await exportPDF(filteredProviders, "proveedores-xp.pdf");
+    } catch (err) {
+      console.error(err);
+      sileo.error({ title: "No se pudo exportar a PDF" });
+    }
   }
 
   /* ── Atajo Escape ── */
@@ -287,13 +391,20 @@ export default function Page() {
     <div className="app">
       <Header
         subtitle={paisesTexto || "Sin proveedores aún"}
-        onExportCSV={exportCSV}
+        count={filteredProviders.length}
+        onExportExcel={handleExportExcel}
+        onExportPDF={handleExportPDF}
         onAdd={openAdd}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        onOpenNotifications={() => setUnreadCount(0)}
       />
       <main>
         {loadError ? (
           <div className="empty">
-            <div className="empty-icon">⚠️</div>
+            <span className="empty-icon">
+              <AlertTriangle size={22} />
+            </span>
             <div>{loadError}</div>
           </div>
         ) : (
@@ -311,6 +422,8 @@ export default function Page() {
               providers={filteredProviders}
               loading={loading}
               onOpen={openDetail}
+              page={page}
+              onPageChange={setPage}
             />
           </>
         )}
@@ -325,6 +438,7 @@ export default function Page() {
           catalogos={catalogos}
           geo={geo}
           editingProvider={editingProvider}
+          existingNames={existingNames}
         />
       )}
 
@@ -334,7 +448,9 @@ export default function Page() {
         idx={detailIdx}
         onClose={closeDetail}
         onEdit={openEdit}
-        onDelete={handleDelete}
+        onDeactivate={handleDeactivate}
+        onReactivate={handleReactivate}
+        onUpdateScore={handleUpdateScore}
         adjuntos={adjuntos}
         adjuntosLoading={adjuntosLoading}
         onAddLink={handleAddLink}
@@ -342,7 +458,7 @@ export default function Page() {
         onRemoveAdjunto={handleRemoveAdjunto}
       />
 
-      <Toast message={toast} />
+      {!modalOpen && !detailId && <MobileFab onClick={openAdd} />}
     </div>
   );
 }
