@@ -107,10 +107,14 @@ export default function ProviderModal({
       });
       initLocation(p.pais, p.region, p.ciudad);
     } else {
-      setForm(emptyForm);
+      setForm({
+        ...emptyForm,
+        categoriaId: catalogos.categorias[0] ? String(catalogos.categorias[0].id) : "",
+        estadoId: catalogos.estados[0] ? String(catalogos.estados[0].id) : "",
+      });
       initLocation("", "", "");
     }
-  }, [open, editingProvider, initLocation]);
+  }, [open, editingProvider, initLocation, catalogos.categorias, catalogos.estados]);
 
   function handlePaisChange(v) {
     setPaisSel(v);
@@ -151,6 +155,14 @@ export default function ProviderModal({
     }
     if (!finalPais) {
       alert("Selecciona el país");
+      return;
+    }
+    if (!form.categoriaId) {
+      alert("Selecciona la categoría");
+      return;
+    }
+    if (!form.estadoId) {
+      alert("Selecciona el estado");
       return;
     }
     onSave({
